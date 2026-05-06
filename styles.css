@@ -382,28 +382,59 @@ body {
     font-size: 12px;
 }
 
+.controls-row {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+}
+
+.controls-record .control-btn {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
 .controls-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-2);
     margin-bottom: var(--space-4);
 }
 
 .control-btn {
-    padding: var(--space-3) var(--space-2);
+    padding: var(--space-2) var(--space-2);
     border: none;
     border-radius: var(--radius-md);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--space-2);
+    gap: var(--space-1);
     background-color: var(--surface-dark);
     color: var(--text-secondary);
     border: 1px solid var(--border-light);
+    min-height: 52px;
+}
+
+.control-btn span {
+    line-height: 1.15;
+    text-align: center;
+    white-space: normal;
+}
+
+.control-btn.secondary-btn {
+    background-color: var(--surface-dark);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+}
+
+.control-btn.secondary-btn:hover:not(:disabled) {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: var(--error);
+    border-color: rgba(239, 68, 68, 0.4);
 }
 
 .control-btn:hover:not(:disabled) {
@@ -569,23 +600,18 @@ body {
     .app-container {
         padding: var(--space-3);
     }
-    
-    .controls-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: var(--space-2);
+
+    .controls-grid.controls-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .controls-grid.controls-actions .control-btn:last-child:nth-child(odd) {
+        grid-column: span 2;
     }
     
     .config-section {
         grid-template-columns: 1fr;
         gap: var(--space-2);
-    }
-    
-    .control-btn span {
-        display: none;
-    }
-    
-    .control-btn {
-        padding: var(--space-3);
     }
     
     .logo-text h1 {

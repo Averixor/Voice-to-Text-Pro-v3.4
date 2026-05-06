@@ -74,22 +74,30 @@
             </section>
 
             <section class="controls-section">
-                <div class="controls-grid">
-                    <button class="control-btn primary-btn" id="startBtn" title="Начать запись (Ctrl+Shift+1)">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <div class="controls-row controls-record">
+                    <button type="button" class="control-btn primary-btn" id="startBtn" title="Начать запись (Ctrl+Shift+1)">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <polygon points="5 3 19 12 5 21 5 3"></polygon>
                         </svg>
                         <span>Начать</span>
                     </button>
-                    <button class="control-btn secondary-btn hidden" id="stopBtn" title="Остановить запись (Ctrl+Shift+2)">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <button type="button" class="control-btn hidden" id="pauseBtn" title="Пауза — приостановить распознавание">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+                            <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+                        </svg>
+                        <span>Пауза</span>
+                    </button>
+                    <button type="button" class="control-btn secondary-btn hidden" id="stopBtn" title="Остановить запись (Ctrl+Shift+2)">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                         </svg>
                         <span>Стоп</span>
                     </button>
-                    
-                    <button class="control-btn" id="insertBtn" title="Вставить текст в активное поле">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                </div>
+                <div class="controls-grid controls-actions">
+                    <button type="button" class="control-btn" id="insertBtn" title="Вставить текст в активное поле (Ctrl+Shift+I)">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M12 20h9"/>
                             <path d="M16.5 3.5l-2.5 2.5 2.5 2.5 2.5-2.5-2.5-2.5z"/>
                             <path d="M8 12h.01"/>
@@ -107,16 +115,15 @@
                         </svg>
                         <span>Вставить</span>
                     </button>
-                    
-                    <button class="control-btn" id="copyBtn" title="Копировать текст (Ctrl+C)">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <button type="button" class="control-btn" id="copyBtn" title="Копировать текст">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                         </svg>
                         <span>Копировать</span>
                     </button>
-                    <button class="control-btn danger-btn" id="clearBtn" title="Очистить текст (Ctrl+Del)">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <button type="button" class="control-btn danger-btn" id="clearBtn" title="Очистить текст (Ctrl+Del)">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
                             <line x1="18" y1="9" x2="12" y2="15"></line>
                             <line x1="12" y1="9" x2="18" y2="15"></line>

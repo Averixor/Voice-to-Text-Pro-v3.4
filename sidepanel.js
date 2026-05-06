@@ -2,6 +2,7 @@ class SpeechToTextPro {
     constructor() {
         this.recognition = null;
         this.isRecording = false;
+        this.isPaused = false;
         this.finalTranscript = '';
         this.microphoneAccessGranted = false;
         this.recordingStartTime = null;
@@ -23,6 +24,7 @@ class SpeechToTextPro {
 
     initializeElements() {
         this.startBtn = document.getElementById('startBtn');
+        this.pauseBtn = document.getElementById('pauseBtn');
         this.stopBtn = document.getElementById('stopBtn');
         this.insertBtn = document.getElementById('insertBtn');
         this.copyBtn = document.getElementById('copyBtn');
@@ -46,6 +48,7 @@ class SpeechToTextPro {
 
     setupEventListeners() {
         this.startBtn.addEventListener('click', () => this.startRecording());
+        this.pauseBtn.addEventListener('click', () => this.pauseRecording());
         this.stopBtn.addEventListener('click', () => this.stopRecording());
         this.insertBtn.addEventListener('click', () => this.insertTextToActiveField());
         this.copyBtn.addEventListener('click', () => this.copyToClipboard());
@@ -82,6 +85,7 @@ class SpeechToTextPro {
             this.statusCard.classList.remove('status-info');
             this.statusCard.classList.add('status-error');
             this.startBtn.disabled = true;
+            this.pauseBtn.disabled = true;
         } else {
             this.initRecognition();
         }
@@ -113,6 +117,7 @@ class SpeechToTextPro {
                 this.instructions.style.display = 'flex';
                 this.status.textContent = 'Нет доступа к микрофону. Разрешите доступ и обновите страницу.';
                 this.isRecording = false;
+                this.isPaused = false;
                 this.updateUIStatus('error', 'Нет доступа к микрофону');
             } else if (event.error === 'no-speech') {
                 if (this.isRecording) {
@@ -121,9 +126,11 @@ class SpeechToTextPro {
             } else if (event.error === 'network') {
                 this.status.textContent = 'Ошибка сети. Проверьте подключение.';
                 this.isRecording = false;
+                this.isPaused = false;
                 this.updateUIStatus('error', 'Ошибка сети');
             } else {
                 this.isRecording = false;
+                this.isPaused = false;
                 this.updateUIStatus('error', 'Ошибка распознавания');
             }
         };
@@ -136,9 +143,10 @@ class SpeechToTextPro {
                 } catch (e) {
                     console.error('Failed to restart recognition:', e);
                     this.isRecording = false;
+                    this.isPaused = false;
                     this.updateUIStatus('idle', 'Запись остановлена');
                 }
-            } else {
+            } else if (!this.isPaused) {
                 this.updateUIStatus('idle', 'Запись остановлена');
             }
         };
@@ -161,6 +169,11 @@ class SpeechToTextPro {
     }
 
     startRecording() {
+        if (this.isPaused) {
+            this.resumeRecording();
+            return;
+        }
+
         if (!this.recognition) {
             this.initRecognition();
         }
@@ -170,7 +183,7 @@ class SpeechToTextPro {
         this.recognition.lang = this.languageSelect.value;
         this.currentLanguage = this.languageSelect.value;
         this.finalTranscript = this.output.value;
-        
+        this.isPaused = false;
         this.isRecording = true;
         
         try {
@@ -185,17 +198,64 @@ class SpeechToTextPro {
         }
     }
 
-    stopRecording() {
-        if (!this.recognition || !this.isRecording) return;
-        
+    pauseRecording() {
+        if (!this.recognition || !this.isRecording || this.isPaused) return;
+
+        this.isPaused = true;
         this.isRecording = false;
-        
+
         try {
             this.recognition.stop();
         } catch (e) {
-            console.error('Failed to stop recognition:', e);
+            console.error('Failed to pause recognition:', e);
+            this.isPaused = false;
+            this.updateUIStatus('error', 'Не удалось поставить на паузу');
+            return;
         }
-        
+
+        this.stopTimer();
+        this.saveTextDraft();
+        this.updateUIStatus('paused', 'На паузе');
+    }
+
+    resumeRecording() {
+        if (!this.recognition) {
+            this.initRecognition();
+        }
+        if (!this.recognition || !this.isPaused) return;
+
+        this.isPaused = false;
+        this.recognition.lang = this.languageSelect.value;
+        this.currentLanguage = this.languageSelect.value;
+        this.finalTranscript = this.output.value;
+        this.isRecording = true;
+
+        try {
+            this.recognition.start();
+            this.updateUIStatus('preparing', 'Ожидание микрофона...');
+            this.saveSettings();
+        } catch (e) {
+            console.error('Failed to resume recognition:', e);
+            this.isRecording = false;
+            this.updateUIStatus('error', 'Не удалось продолжить запись');
+        }
+    }
+
+    stopRecording() {
+        if (!this.recognition) return;
+
+        this.isPaused = false;
+        const wasLive = this.isRecording;
+        this.isRecording = false;
+
+        if (wasLive) {
+            try {
+                this.recognition.stop();
+            } catch (e) {
+                console.error('Failed to stop recognition:', e);
+            }
+        }
+
         this.stopTimer();
         this.saveTextDraft();
         this.updateUIStatus('idle', 'Запись остановлена');
@@ -278,27 +338,45 @@ class SpeechToTextPro {
         this.recordingTime.style.display = 'none';
         if (this.waveContainer) this.waveContainer.style.display = 'none';
 
+        const startLabel = this.startBtn.querySelector('span');
+
         if (state === 'recording') {
             this.statusCard.classList.add('status-recording');
             this.status.textContent = message || 'Идет запись...';
             this.recordingTime.style.display = 'flex';
             if (this.waveContainer) this.waveContainer.style.display = 'flex';
+            if (startLabel) startLabel.textContent = 'Начать';
             this.startBtn.classList.add('hidden');
+            this.pauseBtn.classList.remove('hidden');
+            this.stopBtn.classList.remove('hidden');
+        } else if (state === 'paused') {
+            this.statusCard.classList.add('status-idle');
+            this.status.textContent = message || 'На паузе';
+            this.recordingTime.style.display = 'flex';
+            if (startLabel) startLabel.textContent = 'Продолжить';
+            this.startBtn.classList.remove('hidden');
+            this.pauseBtn.classList.add('hidden');
             this.stopBtn.classList.remove('hidden');
         } else if (state === 'idle') {
             this.statusCard.classList.add('status-idle');
             this.status.textContent = message || 'Готов к записи';
+            if (startLabel) startLabel.textContent = 'Начать';
             this.startBtn.classList.remove('hidden');
+            this.pauseBtn.classList.add('hidden');
             this.stopBtn.classList.add('hidden');
         } else if (state === 'error') {
             this.statusCard.classList.add('status-error');
             this.status.textContent = message || 'Произошла ошибка';
+            if (startLabel) startLabel.textContent = 'Начать';
             this.startBtn.classList.remove('hidden');
+            this.pauseBtn.classList.add('hidden');
             this.stopBtn.classList.add('hidden');
         } else if (state === 'preparing') {
             this.statusCard.classList.add('status-preparing');
             this.status.textContent = message || 'Подготовка...';
+            if (startLabel) startLabel.textContent = 'Начать';
             this.startBtn.classList.add('hidden');
+            this.pauseBtn.classList.remove('hidden');
             this.stopBtn.classList.remove('hidden');
         }
     }
@@ -306,12 +384,19 @@ class SpeechToTextPro {
     copyToClipboard() {
         this.output.select();
         document.execCommand('copy');
-        this.updateUIStatus('idle', 'Текст скопирован в буфер обмена');
-        
+        const msg = 'Текст скопирован в буфер обмена';
+        if (this.isRecording) {
+            this.status.textContent = msg;
+        } else if (this.isPaused) {
+            this.status.textContent = msg;
+        } else {
+            this.updateUIStatus('idle', msg);
+        }
+
         setTimeout(() => {
-            if (!this.isRecording) {
-                this.updateUIStatus('idle', 'Готов к записи');
-            }
+            if (this.isRecording) this.updateUIStatus('recording');
+            else if (this.isPaused) this.updateUIStatus('paused', 'На паузе');
+            else this.updateUIStatus('idle', 'Готов к записи');
         }, 2000);
     }
 
@@ -322,12 +407,19 @@ class SpeechToTextPro {
         this.updateStats();
         this.updateEditorOverlay();
         chrome.storage.local.set({ textDraft: '' });
-        this.updateUIStatus('idle', 'Текст очищен');
-        
+        const msg = 'Текст очищен';
+        if (this.isRecording) {
+            this.status.textContent = msg;
+        } else if (this.isPaused) {
+            this.status.textContent = msg;
+        } else {
+            this.updateUIStatus('idle', msg);
+        }
+
         setTimeout(() => {
-            if (!this.isRecording) {
-                this.updateUIStatus('idle', 'Готов к записи');
-            }
+            if (this.isRecording) this.updateUIStatus('recording');
+            else if (this.isPaused) this.updateUIStatus('paused', 'На паузе');
+            else this.updateUIStatus('idle', 'Готов к записи');
         }, 2000);
     }
 
