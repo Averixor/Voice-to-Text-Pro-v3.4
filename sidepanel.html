@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Голос в Текст Pro</title>
+    <title>Голос в Текст боковая панель Pro</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="animated-bg">
+    <div class="animated-bg" aria-hidden="true">
         <div class="gradient-orbs">
             <div class="orb orb-1"></div>
             <div class="orb orb-2"></div>
@@ -34,25 +34,25 @@
                         <span class="tagline">AI-пунктуация • Проверка орфографии</span>
                     </div>
                 </div>
-                <button class="icon-btn close-btn" id="closeBtn" title="Закрыть панель">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <button type="button" class="icon-btn close-btn" id="closeBtn" title="Закрыть панель" aria-label="Закрыть панель">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
                 </button>
             </div>
 
-            <div class="status-card" id="statusCard">
-                <div class="status-icon" id="waveContainer" style="display: none;">
+            <div class="status-card status-idle" id="statusCard">
+                <div class="status-icon" id="waveContainer" style="display: none;" aria-hidden="true">
                     <div class="wave-bar"></div>
                     <div class="wave-bar"></div>
                     <div class="wave-bar"></div>
                     <div class="wave-bar"></div>
                     <div class="wave-bar"></div>
                 </div>
-                <span id="status">Готов к работе</span>
+                <span id="status" role="status" aria-live="polite" aria-atomic="true">Готов к записи</span>
                 <div class="recording-time" id="recordingTime" style="display: none;">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <circle cx="12" cy="12" r="10"></circle>
                         <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
@@ -62,13 +62,14 @@
         </header>
 
         <main class="app-main">
-            <section class="editor-section" id="editor-container">
+            <section class="editor-section" id="editor-container" aria-label="Область распознанного текста">
                 <div class="output-area">
-                    <textarea id="output" placeholder="Начните говорить..." rows="10"></textarea>
+                    <label for="output" class="visually-hidden">Распознанный текст</label>
+                    <textarea id="output" name="output" placeholder="Начните говорить..." rows="10" spellcheck="true" autocomplete="off"></textarea>
                 </div>
-                <div class="editor-overlay" id="editorOverlay">
-                    <div class="overlay-icon">🎙️</div>
-                    <div class="overlay-text">Нажмите "Начать" и говорите</div>
+                <div class="editor-overlay" id="editorOverlay" role="region" aria-label="Подсказка">
+                    <div class="overlay-icon" aria-hidden="true">🎙️</div>
+                    <div class="overlay-text">Нажмите «Начать» и говорите</div>
                     <div class="overlay-subtext">Текст появится здесь</div>
                 </div>
             </section>
@@ -161,15 +162,15 @@
             </section>
         </main>
 
-        <section class="instructions-section" id="instructions" style="display: none;">
+        <section class="instructions-section" id="instructions" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="instructionsHeading">
             <div class="instructions-card">
                 <div class="instructions-header">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <circle cx="12" cy="12" r="10"></circle>
                         <line x1="12" y1="8" x2="12" y2="12"></line>
                         <line x1="12" y1="16" x2="12.01" y2="16"></line>
                     </svg>
-                    <h3>Требуется доступ к микрофону</h3>
+                    <h3 id="instructionsHeading">Требуется доступ к микрофону</h3>
                 </div>
                 <div class="instructions-content">
                     <ol>

@@ -12,7 +12,8 @@ class SpeechToTextPro {
         this.sessionWordCount = 0;
         this.currentLanguage = 'ru-RU';
         this.saveTimeout = null;
-        
+        this._transientStatusTimer = null;
+
         this.initializeElements();
         this.setupEventListeners();
         this.loadSavedSettings();
@@ -79,20 +80,27 @@ class SpeechToTextPro {
         });
     }
 
+    static getSpeechRecognitionCtor() {
+        return window.SpeechRecognition || window.webkitSpeechRecognition || null;
+    }
+
     checkBrowserSupport() {
-        if (!('webkitSpeechRecognition' in window)) {
+        if (!SpeechToTextPro.getSpeechRecognitionCtor()) {
             this.status.textContent = 'Ошибка: Ваш браузер не поддерживает Speech Recognition API.';
             this.statusCard.classList.remove('status-info');
             this.statusCard.classList.add('status-error');
             this.startBtn.disabled = true;
             this.pauseBtn.disabled = true;
+            this.stopBtn.disabled = true;
         } else {
             this.initRecognition();
         }
     }
 
     initRecognition() {
-        this.recognition = new webkitSpeechRecognition();
+        const Recognition = SpeechToTextPro.getSpeechRecognitionCtor();
+        if (!Recognition) return;
+        this.recognition = new Recognition();
         this.recognition.continuous = true;
         this.recognition.interimResults = true;
         this.recognition.lang = this.languageSelect.value;
@@ -194,6 +202,7 @@ class SpeechToTextPro {
         } catch (e) {
             console.error('Failed to start recognition:', e);
             this.isRecording = false;
+            this.isPaused = false;
             this.updateUIStatus('error', 'Не удалось запустить запись');
         }
     }
@@ -209,7 +218,8 @@ class SpeechToTextPro {
         } catch (e) {
             console.error('Failed to pause recognition:', e);
             this.isPaused = false;
-            this.updateUIStatus('error', 'Не удалось поставить на паузу');
+            this.isRecording = true;
+            this.updateUIStatus('recording');
             return;
         }
 
@@ -236,8 +246,9 @@ class SpeechToTextPro {
             this.saveSettings();
         } catch (e) {
             console.error('Failed to resume recognition:', e);
+            this.isPaused = true;
             this.isRecording = false;
-            this.updateUIStatus('error', 'Не удалось продолжить запись');
+            this.updateUIStatus('paused', 'На паузе');
         }
     }
 
@@ -264,21 +275,23 @@ class SpeechToTextPro {
     insertTextToActiveField() {
         const textToInsert = this.output.value;
         if (!textToInsert.trim()) {
-            this.updateUIStatus('idle', 'Нет текста для вставки');
+            this.showTransientStatus('Нет текста для вставки');
             return;
         }
-        
-        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             const activeTab = tabs[0];
-            if (activeTab && activeTab.id) {
-                chrome.tabs.sendMessage(activeTab.id, {
-                    action: 'pasteSelection',
-                    textToPaste: textToInsert
-                }).catch(() => {
-                    this.updateUIStatus('error', 'Не удалось вставить текст');
-                });
-                this.updateUIStatus('idle', 'Текст вставлен');
+            if (!activeTab?.id) {
+                this.showTransientStatus('Нет активной вкладки');
+                return;
             }
+            chrome.tabs.sendMessage(activeTab.id, {
+                action: 'pasteSelection',
+                textToPaste: textToInsert
+            }).catch(() => {
+                this.showTransientStatus('Не удалось вставить текст', 2500, true);
+            });
+            this.showTransientStatus('Текст вставлен');
         });
     }
 
@@ -305,10 +318,12 @@ class SpeechToTextPro {
         }
 
         let formatted = text.trim();
-        
-        const lastChar = this.output.value.slice(-1);
-        const isStartOfSentence = this.output.value.length === 0 || 
-            ['.', '?', '!', ':', ';', '\n'].includes(lastChar);
+
+        const committedBefore = this.finalTranscript.trimEnd();
+        const lastChar = committedBefore.slice(-1);
+        const sentenceEndChars = ['.', '?', '!', ':', ';', '\n', '…'];
+        const isStartOfSentence =
+            committedBefore.length === 0 || sentenceEndChars.includes(lastChar);
         
         if (isStartOfSentence && formatted.length > 0) {
             formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
@@ -332,7 +347,37 @@ class SpeechToTextPro {
         
         return formatted + ' ';
     }
-    
+
+    /**
+     * Показ сообщения в строке статуса без сброса режима записи / паузы.
+     * @param {boolean} [asError] — если true, временно подсветить карточку как ошибку (idle/error UI).
+     */
+    showTransientStatus(message, durationMs = 2000, asError = false) {
+        clearTimeout(this._transientStatusTimer);
+
+        const restore = () => {
+            if (this.isRecording) this.updateUIStatus('recording');
+            else if (this.isPaused) this.updateUIStatus('paused', 'На паузе');
+            else this.updateUIStatus('idle', 'Готов к записи');
+        };
+
+        if (asError && !this.isRecording && !this.isPaused) {
+            this.updateUIStatus('error', message);
+            this._transientStatusTimer = setTimeout(() => restore(), durationMs);
+            return;
+        }
+
+        if (this.isRecording || this.isPaused) {
+            this.status.textContent = message;
+        } else if (asError) {
+            this.updateUIStatus('error', message);
+        } else {
+            this.updateUIStatus('idle', message);
+        }
+
+        this._transientStatusTimer = setTimeout(() => restore(), durationMs);
+    }
+
     updateUIStatus(state, message = '') {
         this.statusCard.classList.remove('status-recording', 'status-idle', 'status-error', 'status-preparing');
         this.recordingTime.style.display = 'none';
@@ -384,20 +429,7 @@ class SpeechToTextPro {
     copyToClipboard() {
         this.output.select();
         document.execCommand('copy');
-        const msg = 'Текст скопирован в буфер обмена';
-        if (this.isRecording) {
-            this.status.textContent = msg;
-        } else if (this.isPaused) {
-            this.status.textContent = msg;
-        } else {
-            this.updateUIStatus('idle', msg);
-        }
-
-        setTimeout(() => {
-            if (this.isRecording) this.updateUIStatus('recording');
-            else if (this.isPaused) this.updateUIStatus('paused', 'На паузе');
-            else this.updateUIStatus('idle', 'Готов к записи');
-        }, 2000);
+        this.showTransientStatus('Текст скопирован в буфер обмена');
     }
 
     clearText() {
@@ -407,26 +439,14 @@ class SpeechToTextPro {
         this.updateStats();
         this.updateEditorOverlay();
         chrome.storage.local.set({ textDraft: '' });
-        const msg = 'Текст очищен';
-        if (this.isRecording) {
-            this.status.textContent = msg;
-        } else if (this.isPaused) {
-            this.status.textContent = msg;
-        } else {
-            this.updateUIStatus('idle', msg);
-        }
-
-        setTimeout(() => {
-            if (this.isRecording) this.updateUIStatus('recording');
-            else if (this.isPaused) this.updateUIStatus('paused', 'На паузе');
-            else this.updateUIStatus('idle', 'Готов к записи');
-        }, 2000);
+        this.showTransientStatus('Текст очищен');
     }
 
     closeSidePanel() {
         if (this.saveTimeout) {
             clearTimeout(this.saveTimeout);
         }
+        clearTimeout(this._transientStatusTimer);
         chrome.runtime.sendMessage({ action: "closeSidePanel" }).catch(() => {});
     }
 
@@ -475,6 +495,8 @@ class SpeechToTextPro {
     }
 
     handleGlobalKeyboardShortcuts(e) {
+        if (e.repeat) return;
+
         if (e.ctrlKey && e.code === 'KeyC' && document.activeElement === this.output) {
             this.copyToClipboard();
             e.preventDefault();
@@ -526,7 +548,7 @@ class SpeechToTextPro {
                 this.languageSelect.value = result.language;
                 this.currentLanguage = result.language;
             }
-            if (result.autoPunctuation) {
+            if (result.autoPunctuation !== undefined && result.autoPunctuation !== null) {
                 this.autoPunctuationSelect.value = result.autoPunctuation;
                 this.autoPunctuationLevel = result.autoPunctuation;
             }
@@ -573,13 +595,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         }
         sendResponse({ success: true });
     } else if (request.action === "recognitionError") {
+        sttAppInstance.isRecording = false;
+        sttAppInstance.isPaused = false;
         sttAppInstance.updateUIStatus('error', `Ошибка: ${request.error}`);
         sendResponse({ success: true });
     } else if (request.action === "pasteCompleted") {
         if (request.success) {
-            sttAppInstance.updateUIStatus('idle', 'Текст успешно вставлен');
+            sttAppInstance.showTransientStatus('Текст успешно вставлен');
         } else {
-            sttAppInstance.updateUIStatus('error', 'Не удалось вставить текст');
+            sttAppInstance.showTransientStatus('Не удалось вставить текст', 2500, true);
         }
         sendResponse({ success: true });
     }
