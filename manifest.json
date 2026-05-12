@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Голос в Текст боковая панель Pro",
-  "version": "3.3",
+  "version": "3.4",
   "description": "Продвинутое преобразование голоса в текст с проверкой орфографии и пунктуации",
   "permissions": [
     "activeTab",
@@ -11,10 +11,7 @@
     "sidePanel",
     "scripting"
   ],
-  "host_permissions": [
-    "https://*/*",
-    "http://*/*"
-  ],
+  "host_permissions": ["https://*/*", "http://*/*"],
   "side_panel": {
     "default_path": "sidepanel.html"
   },

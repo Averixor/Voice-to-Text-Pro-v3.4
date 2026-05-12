@@ -1,200 +1,346 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Голос в Текст боковая панель Pro</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
     <div class="animated-bg" aria-hidden="true">
-        <div class="gradient-orbs">
-            <div class="orb orb-1"></div>
-            <div class="orb orb-2"></div>
-            <div class="orb orb-3"></div>
-            <div class="orb orb-4"></div>
-        </div>
-        <div class="particles">
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-        </div>
+      <div class="gradient-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+      </div>
+      <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+      </div>
     </div>
 
     <div class="app-container">
-        <header class="app-header">
-            <div class="header-main">
-                <div class="logo">
-                    <div class="logo-icon">🎤</div>
-                    <div class="logo-text">
-                        <h1>Голос в Текст</h1>
-                        <span class="tagline">AI-пунктуация • Проверка орфографии</span>
-                    </div>
-                </div>
-                <button type="button" class="icon-btn close-btn" id="closeBtn" title="Закрыть панель" aria-label="Закрыть панель">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
+      <header class="app-header">
+        <div class="header-main">
+          <div class="logo">
+            <div class="logo-icon">🎤</div>
+            <div class="logo-text">
+              <h1>Голос в Текст</h1>
+              <span class="tagline">AI-пунктуация • Проверка орфографии</span>
             </div>
+          </div>
+          <button
+            type="button"
+            class="icon-btn close-btn"
+            id="closeBtn"
+            title="Закрыть панель"
+            aria-label="Закрыть панель"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
 
-            <div class="status-card status-idle" id="statusCard">
-                <div class="status-icon" id="waveContainer" style="display: none;" aria-hidden="true">
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                </div>
-                <span id="status" role="status" aria-live="polite" aria-atomic="true">Готов к записи</span>
-                <div class="recording-time" id="recordingTime" style="display: none;">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                    <span id="timeCount">00:00</span>
-                </div>
-            </div>
-        </header>
+        <div class="status-card status-idle" id="statusCard">
+          <div
+            class="status-icon"
+            id="waveContainer"
+            style="display: none"
+            aria-hidden="true"
+          >
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+          </div>
+          <span id="status" role="status" aria-live="polite" aria-atomic="true"
+            >Готов к записи</span
+          >
+          <div class="recording-time" id="recordingTime" style="display: none">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span id="timeCount">00:00</span>
+          </div>
+        </div>
+      </header>
 
-        <main class="app-main">
-            <section class="editor-section" id="editor-container" aria-label="Область распознанного текста">
-                <div class="output-area">
-                    <label for="output" class="visually-hidden">Распознанный текст</label>
-                    <textarea id="output" name="output" placeholder="Начните говорить..." rows="10" spellcheck="true" autocomplete="off"></textarea>
-                </div>
-                <div class="editor-overlay" id="editorOverlay" role="region" aria-label="Подсказка">
-                    <div class="overlay-icon" aria-hidden="true">🎙️</div>
-                    <div class="overlay-text">Нажмите «Начать» и говорите</div>
-                    <div class="overlay-subtext">Текст появится здесь</div>
-                </div>
-            </section>
-
-            <section class="controls-section">
-                <div class="controls-row controls-record">
-                    <button type="button" class="control-btn primary-btn" id="startBtn" title="Начать запись (Ctrl+Shift+1)">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
-                        <span>Начать</span>
-                    </button>
-                    <button type="button" class="control-btn hidden" id="pauseBtn" title="Пауза — приостановить распознавание">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <rect x="6" y="4" width="4" height="16" rx="1"></rect>
-                            <rect x="14" y="4" width="4" height="16" rx="1"></rect>
-                        </svg>
-                        <span>Пауза</span>
-                    </button>
-                    <button type="button" class="control-btn secondary-btn hidden" id="stopBtn" title="Остановить запись (Ctrl+Shift+2)">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                        </svg>
-                        <span>Стоп</span>
-                    </button>
-                </div>
-                <div class="controls-grid controls-actions">
-                    <button type="button" class="control-btn" id="insertBtn" title="Вставить текст в активное поле (Ctrl+Shift+I)">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M12 20h9"/>
-                            <path d="M16.5 3.5l-2.5 2.5 2.5 2.5 2.5-2.5-2.5-2.5z"/>
-                            <path d="M8 12h.01"/>
-                            <path d="M8 16h.01"/>
-                            <path d="M8 8h.01"/>
-                            <path d="M16 16h.01"/>
-                            <path d="M16 8h.01"/>
-                            <path d="M12 12h.01"/>
-                            <path d="M12 8h.01"/>
-                            <path d="M12 16h.01"/>
-                            <path d="M4 20h.01"/>
-                            <path d="M4 16h.01"/>
-                            <path d="M4 12h.01"/>
-                            <path d="M4 8h.01"/>
-                        </svg>
-                        <span>Вставить</span>
-                    </button>
-                    <button type="button" class="control-btn" id="copyBtn" title="Копировать текст">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        </svg>
-                        <span>Копировать</span>
-                    </button>
-                    <button type="button" class="control-btn danger-btn" id="clearBtn" title="Очистить текст (Ctrl+Del)">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
-                            <line x1="18" y1="9" x2="12" y2="15"></line>
-                            <line x1="12" y1="9" x2="18" y2="15"></line>
-                        </svg>
-                        <span>Очистить</span>
-                    </button>
-                </div>
-            </section>
-
-            <section class="config-section">
-                <div class="config-item">
-                    <label for="language">Язык распознавания:</label>
-                    <select id="language">
-                        <option value="ru-RU">Русский</option>
-                        <option value="en-US">Английский (США)</option>
-                        <option value="uk-UA">Украинский</option>
-                        <option value="es-ES">Испанский</option>
-                        <option value="fr-FR">Французский</option>
-                        <option value="de-DE">Немецкий</option>
-                        <option value="it-IT">Итальянский</option>
-                        <option value="ja-JP">Японский</option>
-                        <option value="ko-KR">Корейский</option>
-                        <option value="zh-CN">Китайский</option>
-                    </select>
-                </div>
-                <div class="config-item">
-                    <label for="autoPunctuation">AI Пунктуация:</label>
-                    <select id="autoPunctuation">
-                        <option value="off">Выкл</option>
-                        <option value="low">Низкий (только точки)</option>
-                        <option value="medium">Средний (запятые, точки)</option>
-                        <option value="high">Высокий (вопросы, восклицания)</option>
-                    </select>
-                </div>
-            </section>
-        </main>
-
-        <section class="instructions-section" id="instructions" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="instructionsHeading">
-            <div class="instructions-card">
-                <div class="instructions-header">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
-                    <h3 id="instructionsHeading">Требуется доступ к микрофону</h3>
-                </div>
-                <div class="instructions-content">
-                    <ol>
-                        <li>Нажмите на значок 🔒 в адресной строке</li>
-                        <li>Выберите "Настройки сайта"</li>
-                        <li>Разрешите доступ к микрофону</li>
-                        <li>Обновите страницу</li>
-                    </ol>
-                </div>
-            </div>
+      <main class="app-main">
+        <section
+          class="editor-section"
+          id="editor-container"
+          aria-label="Область распознанного текста"
+        >
+          <div class="output-area">
+            <label for="output" class="visually-hidden"
+              >Распознанный текст</label
+            >
+            <textarea
+              id="output"
+              name="output"
+              placeholder="Начните говорить..."
+              rows="10"
+              spellcheck="true"
+              autocomplete="off"
+            ></textarea>
+          </div>
+          <div
+            class="editor-overlay"
+            id="editorOverlay"
+            role="region"
+            aria-label="Подсказка"
+          >
+            <div class="overlay-icon" aria-hidden="true">🎙️</div>
+            <div class="overlay-text">Нажмите «Начать» и говорите</div>
+            <div class="overlay-subtext">Текст появится здесь</div>
+          </div>
         </section>
 
-        <footer class="app-footer">
-            <div class="footer-content">
-                <div class="version">v3.3 • Голос в Текст Pro</div>
-                <div class="footer-stats">
-                    <div class="stat-item" id="sessionStats">
-                        <span>Сессия: 0 слов</span>
-                    </div>
-                </div>
+        <section class="controls-section">
+          <div class="controls-row controls-record">
+            <button
+              type="button"
+              class="control-btn primary-btn"
+              id="startBtn"
+              title="Начать запись (Ctrl+Shift+1)"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              <span>Начать</span>
+            </button>
+            <button
+              type="button"
+              class="control-btn hidden"
+              id="pauseBtn"
+              title="Пауза — приостановить распознавание"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+                <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+              </svg>
+              <span>Пауза</span>
+            </button>
+            <button
+              type="button"
+              class="control-btn secondary-btn hidden"
+              id="stopBtn"
+              title="Остановить запись (Ctrl+Shift+2)"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              </svg>
+              <span>Стоп</span>
+            </button>
+          </div>
+          <div class="controls-grid controls-actions">
+            <button
+              type="button"
+              class="control-btn"
+              id="insertBtn"
+              title="Вставить текст в активное поле (Ctrl+Shift+I)"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5l-2.5 2.5 2.5 2.5 2.5-2.5-2.5-2.5z" />
+                <path d="M8 12h.01" />
+                <path d="M8 16h.01" />
+                <path d="M8 8h.01" />
+                <path d="M16 16h.01" />
+                <path d="M16 8h.01" />
+                <path d="M12 12h.01" />
+                <path d="M12 8h.01" />
+                <path d="M12 16h.01" />
+                <path d="M4 20h.01" />
+                <path d="M4 16h.01" />
+                <path d="M4 12h.01" />
+                <path d="M4 8h.01" />
+              </svg>
+              <span>Вставить</span>
+            </button>
+            <button
+              type="button"
+              class="control-btn"
+              id="copyBtn"
+              title="Копировать текст"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path
+                  d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                ></path>
+              </svg>
+              <span>Копировать</span>
+            </button>
+            <button
+              type="button"
+              class="control-btn danger-btn"
+              id="clearBtn"
+              title="Очистить текст (Ctrl+Del)"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path
+                  d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"
+                ></path>
+                <line x1="18" y1="9" x2="12" y2="15"></line>
+                <line x1="12" y1="9" x2="18" y2="15"></line>
+              </svg>
+              <span>Очистить</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="config-section">
+          <div class="config-item">
+            <label for="language">Язык распознавания:</label>
+            <select id="language">
+              <option value="ru-RU">Русский</option>
+              <option value="en-US">Английский (США)</option>
+              <option value="uk-UA">Украинский</option>
+              <option value="es-ES">Испанский</option>
+              <option value="fr-FR">Французский</option>
+              <option value="de-DE">Немецкий</option>
+              <option value="it-IT">Итальянский</option>
+              <option value="ja-JP">Японский</option>
+              <option value="ko-KR">Корейский</option>
+              <option value="zh-CN">Китайский</option>
+            </select>
+          </div>
+          <div class="config-item">
+            <label for="autoPunctuation">AI Пунктуация:</label>
+            <select id="autoPunctuation">
+              <option value="off">Выкл</option>
+              <option value="low">Низкий (только точки)</option>
+              <option value="medium">Средний (запятые, точки)</option>
+              <option value="high">Высокий (вопросы, восклицания)</option>
+            </select>
+          </div>
+        </section>
+      </main>
+
+      <section
+        class="instructions-section"
+        id="instructions"
+        style="display: none"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="instructionsHeading"
+      >
+        <div class="instructions-card">
+          <div class="instructions-header">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <h3 id="instructionsHeading">Требуется доступ к микрофону</h3>
+          </div>
+          <div class="instructions-content">
+            <ol>
+              <li>Нажмите на значок 🔒 в адресной строке</li>
+              <li>Выберите "Настройки сайта"</li>
+              <li>Разрешите доступ к микрофону</li>
+              <li>Обновите страницу</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <footer class="app-footer">
+        <div class="footer-content">
+          <div class="version">v3.4 • Голос в Текст Pro</div>
+          <div class="footer-stats">
+            <div class="stat-item" id="sessionStats">
+              <span>Сессия: 0 слов</span>
             </div>
-        </footer>
+          </div>
+        </div>
+      </footer>
     </div>
 
     <script src="sidepanel.js"></script>
-</body>
+  </body>
 </html>
