@@ -1,7 +1,6 @@
 /**
  * Локалізація UI: ключ = BCP-47 (як у списку мови розпізнавання).
- * Безпечно для side panel, content_scripts і service worker:
- * експорт на globalThis (у SW немає window).
+ * Використовується як мова інтерфейсу за вибраним значенням #language.
  */
 (function () {
   const FALLBACK = "en-US";

@@ -373,21 +373,43 @@ class SpeechToTextPro {
       return;
     }
 
+    const pastePayload = {
+      action: "pasteSelection",
+      textToPaste: textToInsert,
+    };
+
+    const handlePasteResponse = (response) => {
+      if (response?.success) {
+        this.showTransientStatus(
+          this.pack.toastPasteOk || this.pack.toastPasted,
+        );
+      } else {
+        this.showTransientStatus(this.pack.toastPasteFail, 2500, true);
+      }
+    };
+
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const activeTab = tabs[0];
       if (!activeTab?.id) {
         this.showTransientStatus(this.pack.toastNoTab);
         return;
       }
+
       chrome.tabs
-        .sendMessage(activeTab.id, {
-          action: "pasteSelection",
-          textToPaste: textToInsert,
-        })
+        .sendMessage(activeTab.id, pastePayload)
+        .then(handlePasteResponse)
         .catch(() => {
-          this.showTransientStatus(this.pack.toastPasteFail, 2500, true);
+          chrome.scripting
+            .executeScript({
+              target: { tabId: activeTab.id },
+              files: ["i18n.js", "content.js"],
+            })
+            .then(() => chrome.tabs.sendMessage(activeTab.id, pastePayload))
+            .then(handlePasteResponse)
+            .catch(() => {
+              this.showTransientStatus(this.pack.toastPasteFail, 2500, true);
+            });
         });
-      this.showTransientStatus(this.pack.toastPasted);
     });
   }
 

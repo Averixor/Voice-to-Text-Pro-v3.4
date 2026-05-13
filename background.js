@@ -78,6 +78,22 @@ function createOrRefreshContextMenu(languageCode) {
   });
 }
 
+function sendPasteToTab(tabId, textToPaste) {
+  const payload = {
+    action: "pasteSelection",
+    textToPaste,
+  };
+
+  return chrome.tabs.sendMessage(tabId, payload).catch(() =>
+    chrome.scripting
+      .executeScript({
+        target: { tabId },
+        files: ["i18n.js", "content.js"],
+      })
+      .then(() => chrome.tabs.sendMessage(tabId, payload)),
+  );
+}
+
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName !== "local" || !changes.language) return;
   const lang = changes.language.newValue || "ru-RU";
@@ -151,14 +167,9 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     chrome.storage.local.get("textDraft", (result) => {
       const textToPaste = result.textDraft || "";
       if (textToPaste) {
-        chrome.tabs
-          .sendMessage(tab.id, {
-            action: "pasteSelection",
-            textToPaste: textToPaste,
-          })
-          .catch((error) =>
-            console.error("Ошибка вставки через контекстное меню:", error),
-          );
+        sendPasteToTab(tab.id, textToPaste).catch((error) =>
+          console.error("Ошибка вставки через контекстное меню:", error),
+        );
       }
     });
   }
