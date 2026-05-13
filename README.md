@@ -1,39 +1,58 @@
 # Voice to Text Pro 3.4
 
-Google Chrome extension: speech to text via **Web Speech API**, **AI punctuation**, browser spell check, UI in the **Chrome Side Panel**.
+**Voice to Text Pro** is a Google Chrome extension for converting speech to text using the **Web Speech API**. It runs in the **Chrome Side Panel**, supports multilingual recognition, smart punctuation, browser spell check, text insertion into web pages, and a localized interface.
 
 ## Features
 
 ### Speech recognition
 
-- **10 languages** in settings (BCP-47): Russian (`ru-RU`), US English (`en-US`), Ukrainian (`uk-UA`), Spanish, French, German, Italian, Japanese, Korean, Chinese (`zh-CN`)
-- Continuous capture with automatic recognition restart on drop
-- Interim and final results
-- Main flow: recognition in the **side panel**; **content script** on the page (draft paste and tab recording when needed)
+- 10 supported language options in settings, using BCP 47 language tags: Russian (ru-RU), English — United States (en-US), Ukrainian (uk-UA), Spanish (es-ES), French (fr-FR), German (de-DE), Italian (it-IT), Japanese (ja-JP), Korean (ko-KR), and Chinese — Simplified (zh-CN).
+- Continuous recognition with automatic restart after recognition drops.
+- Interim and final speech recognition results.
+- Main workflow runs inside the **Chrome Side Panel**.
+- The content script supports draft insertion into editable fields and tab-level recognition when needed.
 
 ### Smart punctuation
 
-- Four levels: **Off**, **Low**, **Medium**, **High**
-- Capitalization after sentence endings: `.` `?` `!` `:` `;` newline `…`
-- **High** level uses **language-specific** question/exclamation patterns (`i18n.js` in both the panel and the content script)
+- Four punctuation modes: **Off**, **Low**, **Medium**, and **High**.
+- Automatic capitalization after sentence endings: `.`, `?`, `!`, `:`, `;`, newline, and `…`.
+- **High** mode uses language-specific question and exclamation patterns from `i18n.js`.
+- The same punctuation rules are shared by both the side panel and the content script.
 
 ### UI localization
 
-- The **recognition language** list sets **Web Speech API language**, the text field **`lang` attribute**, and **the side panel UI strings** from `i18n.js` (`applyAppLocale()` in `sidepanel.js`). Locales **`ru-RU`** and **`uk-UA`** use **English** interface text while keeping Russian/Ukrainian speech and smart-punctuation rules.
-- Chrome **recording-started** notification and **context menu** “paste draft” strings come from **`background.js`** using `chrome.storage.local.language`
-- **Command descriptions** in `manifest.json` (`commands.description`) are **static** manifest strings; changing the panel UI language does not change them
+- The selected **recognition language** controls:
+  - Web Speech API recognition language.
+  - The textarea `lang` attribute.
+  - Side panel UI strings loaded from `i18n.js`.
+- The side panel applies localization through `applyAppLocale()` in `sidepanel.js`.
+- Recording notifications and context menu labels are localized in `background.js` and use `chrome.storage.local.language`.
+- Command descriptions in `manifest.json` are static Chrome manifest strings. Changing the side panel language does not dynamically change those descriptions.
+
+### Text tools
+
+- Insert recognized text into the currently focused field on a web page.
+- Copy recognized text to clipboard.
+- Clear the current draft.
+- Store the current text draft locally.
+- Use the context menu to paste saved text into editable fields.
 
 ### Spell check
 
-- Built-in browser check for the textarea; language follows the selected input language
+- Built-in browser spell check is enabled for the text field.
+- The text field language follows the selected recognition language.
 
 ### Interface
 
-- Side panel, dark theme, animated background
-- Recording: **Start**, **Pause**, **Stop**; text actions: **Insert**, **Copy**, **Clear**; close panel
-- Word stats, ARIA, live status region
+- Chrome Side Panel interface.
+- Dark theme with animated background.
+- Recording controls: **Start**, **Pause**, **Resume**, and **Stop**.
+- Text actions: **Insert**, **Copy**, and **Clear**.
+- Word counter.
+- ARIA labels and live status region for accessibility.
+- Close panel action.
 
-### Keyboard shortcuts
+## Keyboard shortcuts
 
 | Shortcut              | Action                         |
 | --------------------- | ------------------------------ |
@@ -44,106 +63,165 @@ Google Chrome extension: speech to text via **Web Speech API**, **AI punctuation
 | `Ctrl+C` in the field | Copy text                      |
 | `Ctrl+Del`            | Clear text                     |
 
-On macOS, `Command` is used instead of `Ctrl` (see `manifest.json` → `commands`).
+On macOS, Chrome uses `Command` instead of `Ctrl` where applicable. See `manifest.json` → `commands`.
 
 ## Installation
 
-1. Clone or download the project folder (root contains `manifest.json`)
-2. Open `chrome://extensions/`
-3. Enable **Developer mode**
-4. **Load unpacked** → select this folder
+1. Download the release ZIP.
+2. Extract the archive.
+3. Open Chrome.
+4. Go to `chrome://extensions/`.
+5. Enable **Developer mode**.
+6. Click **Load unpacked**.
+7. Select the extracted extension folder containing `manifest.json`.
 
 ## Usage
 
-1. Click the extension icon — the side panel opens (per Chrome default behavior)
-2. Choose **language** — updates both recognition and panel UI
-3. Optionally set **AI punctuation** level
-4. **Start** or `Ctrl+Shift+1` — speak into the microphone
-5. **Pause** — stops recognition without losing text; **Resume** continues recording
-6. **Stop** — ends the recognition session
-7. **Insert** — sends text to the focused field on the page (`input` / `textarea` / `contenteditable`)
-8. Draft and settings are stored in **`chrome.storage.local`**
+1. Click the extension icon to open the side panel.
+2. Choose the recognition language.
+3. Optionally select an AI punctuation mode.
+4. Click **Start** or press `Ctrl+Shift+1`.
+5. Speak into the microphone.
+6. Use **Pause** to temporarily stop recognition without clearing text.
+7. Use **Resume** to continue recording.
+8. Use **Stop** to end the recognition session.
+9. Use **Insert** to send the text into the focused field on the active page.
+10. Use **Copy** or **Clear** when needed.
 
-## Supported languages (recognition + panel UI)
+Draft text and settings are stored locally in `chrome.storage.local`.
 
-| Language     | Code  |
-| ------------ | ----- |
-| Russian      | ru-RU |
-| English (US) | en-US |
-| Ukrainian    | uk-UA |
-| Spanish      | es-ES |
-| French       | fr-FR |
-| German       | de-DE |
-| Italian      | it-IT |
-| Japanese     | ja-JP |
-| Korean       | ko-KR |
-| Chinese      | zh-CN |
+## Supported languages
 
-## `chrome.storage.local` keys
+| Language                  | Code  |
+| ------------------------- | ----- |
+| Russian                   | ru-RU |
+| English — United States   | en-US |
+| Ukrainian                 | uk-UA |
+| Spanish                   | es-ES |
+| French                    | fr-FR |
+| German                    | de-DE |
+| Italian                   | it-IT |
+| Japanese                  | ja-JP |
+| Korean                    | ko-KR |
+| Chinese — Simplified      | zh-CN |
 
-- **`language`** — BCP-47 code; single source for UI and STT.
-- **`autoPunctuation`** — Level: `off` / `low` / `medium` / `high`.
-- **`textDraft`** — Panel text draft.
-- **`sidePanelOpen`** — Flag for hotkey side panel toggle.
+## Local storage
 
-## Project layout (main files)
+The extension uses `chrome.storage.local` for local settings and draft persistence.
 
-- **`manifest.json`** — MV3 manifest, permissions, side panel, content scripts, commands.
-- **`background.js`** — Service worker: commands, menu, notifications, paste, `updateSettings`.
-- **`sidepanel.html`** — Panel markup; loads `i18n.js`, `sidepanel.js`.
-- **`sidepanel.js`** — Panel logic, recognition, `applyAppLocale()`, settings persistence.
-- **`i18n.js`** — UI strings + punctuation regex; `globalThis.AppI18n`.
-- **`content.js`** — Paste; optional tab recognition; punctuation via `i18n.js`.
-- **`styles.css`** — Panel styles.
-- **`icons/`** — 16, 48, 128 icons.
+- `language` — selected BCP 47 language code; single source for recognition language and UI localization.
+- `autoPunctuation` — punctuation level: `off`, `low`, `medium`, or `high`.
+- `textDraft` — current side panel text draft.
+- `sidePanelOpen` — side panel toggle state used by the extension.
 
-## Side panel vs page
+## Project structure
 
-- The panel does not cover the whole page; draft and language are shared via storage
-- **Context menu** on editable fields: paste saved draft; if the tab has no content script, the service worker may **inject** `i18n.js` and `content.js` (`scripting` permission)
+Main files:
+
+- `manifest.json` — Chrome Extension Manifest V3 configuration, permissions, side panel, commands, and content scripts.
+- `background.js` — service worker for keyboard commands, context menu, notifications, paste flow, settings updates, and script injection.
+- `sidepanel.html` — side panel markup; loads `i18n.js` before `sidepanel.js`.
+- `sidepanel.js` — side panel logic, speech recognition, UI localization, settings persistence, and text actions.
+- `i18n.js` — localized UI strings, language normalization, and punctuation patterns exposed through `globalThis.AppI18n`.
+- `content.js` — page-side paste handling, editable field tracking, optional tab recognition, and punctuation support through `i18n.js`.
+- `styles.css` — side panel styles and responsive UI rules.
+- `icons/` — extension icons in 16, 48, and 128 px sizes.
+- `README.md` — project overview and usage guide.
+- `CHANGELOG.md` — version history.
+- `CHECKLIST_VOICE_TO_TEXT_PRO.md` — release and manual testing checklist.
+
+## Side panel and page integration
+
+The extension separates the side panel from the active web page:
+
+- The side panel handles recognition, draft editing, settings, and UI.
+- The content script handles insertion into page fields.
+- Draft text and language settings are shared through `chrome.storage.local`.
+- If the active tab does not already have the content script, the service worker can inject `i18n.js` and `content.js` using the `scripting` permission.
+- The context menu can paste the saved draft into editable fields.
 
 ## Troubleshooting
 
-### No microphone access
+### Microphone access is not available
 
-See the in-panel instructions: lock icon in the address bar → site settings → microphone → reload.
+Check Chrome microphone permissions:
 
-### Recognition not working
+1. Open the page or extension.
+2. Click the lock icon in the address bar.
+3. Open site settings.
+4. Allow microphone access.
+5. Reload the page or extension.
 
-- **Network** required (Chrome’s cloud-backed Web Speech API)
-- Working microphone and site/extension permission
+### Recognition does not start
+
+Check the following:
+
+- Google Chrome supports the Web Speech API on the current system.
+- Microphone access is allowed.
+- A working microphone is connected.
+- Network access is available.
+- The selected language is supported by the browser speech recognition engine.
 
 ### Text does not insert
 
-- Focus an input field; some sites (rich editors) may block insertion
+Try the following:
+
+- Click inside an editable field before pressing **Insert**.
+- Use a standard `input`, `textarea`, or `contenteditable` field.
+- Some complex rich-text editors may block programmatic insertion.
+- Reload the tab and try again.
+- Use the context menu inside the editable field.
+
+### The interface language did not change
+
+Try the following:
+
+- Change the language in the side panel again.
+- Close and reopen the side panel.
+- Reload the extension on `chrome://extensions/`.
 
 ## Tech stack
 
-- **Web Speech API** (`SpeechRecognition` / `webkitSpeechRecognition`)
-- **Chrome Extensions Manifest V3**
-- **Side Panel API**
-- **`chrome.storage.local`**, **`chrome.scripting`** (inject on paste)
-- **CSS** (including `prefers-reduced-motion`)
-- **ES6+**; **`i18n.js`** has no DOM dependency (safe for `importScripts` in a worker)
+- Web Speech API: `SpeechRecognition` / `webkitSpeechRecognition`.
+- Chrome Extensions Manifest V3.
+- Chrome Side Panel API.
+- `chrome.storage.local`.
+- `chrome.scripting`.
+- JavaScript ES6+.
+- CSS with `prefers-reduced-motion` support.
+- Standalone `i18n.js` with no DOM dependency, safe for future `importScripts()` use in a worker.
 
 ## Requirements
 
-- **Google Chrome** with Side Panel + MV3 (target **114+**)
-- Microphone
-- Network for speech recognition
+- Google Chrome with Manifest V3 support.
+- Chrome Side Panel support.
+- Recommended Chrome version: 114+.
+- Microphone.
+- Network access for speech recognition.
 
 ## Updating
 
-In `chrome://extensions/`, click **Reload** on the extension card after replacing files.
+After replacing extension files:
 
-## License
+1. Open `chrome://extensions/`.
+2. Find **Voice to Text Pro**.
+3. Click **Reload**.
+4. Reopen the side panel.
 
-MIT License
+## Release ZIP
 
-## Author
+The release archive should include only the extension files required for installation.
 
-[Averixor](https://github.com/Averixor)
+It should not include:
 
-## Version history
+- `.git/`
+- `.vscode/`
+- `node_modules/`
+- temporary files
+- backup files
+- development-only archives
 
-See **`CHANGELOG.md`**. Current version in **`manifest.json`**: **3.4**.
+Recommended release archive name:
+
+```text
+Voice-to-Text-Pro-v3.4-release.zip
