@@ -5,7 +5,7 @@
 
 const CONTEXT_MENU_I18N = {
   "ru-RU": "Вставить текст из Голос в Текст Pro",
-  "uk-UA": "Вставити текст з Голос у текст Pro",
+  "uk-UA": "Вставити текст з Голос у Текст Pro",
   "en-US": "Insert text from Voice to Text Pro",
   "es-ES": "Insertar texto de Voz a texto Pro",
   "fr-FR": "Insérer le texte depuis Voix vers texte Pro",
@@ -22,7 +22,7 @@ const RECORDING_STARTED_NOTIFY = {
     message: "Запись голоса начата. Говорите сейчас.",
   },
   "uk-UA": {
-    title: "Голос у текст Pro",
+    title: "Голос у Текст Pro",
     message: "Запис розпочато. Говоріть.",
   },
   "en-US": {
