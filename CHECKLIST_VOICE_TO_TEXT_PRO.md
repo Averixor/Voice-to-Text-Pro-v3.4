@@ -8,7 +8,7 @@
 
 ## СТРУКТУРА ПРОЕКТА
 
-```
+```text
 voice-to-text-pro-v3.3-fixed/
 ├── manifest.json              # Конфигурация расширения Chrome (Manifest V3) — v3.4
 ├── background.js              # Service Worker — фоновый скрипт
