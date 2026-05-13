@@ -224,4 +224,4 @@ It should not include:
 Recommended release archive name:
 
 ```text
-Voice-to-Text-Pro-v3.4-release.zip
+Voice-to-Text-Pro-v3.4.zip
