@@ -1,6 +1,6 @@
 // ===========================================
-// content.js: Скрипт контента
-// Выполняет распознавание речи и вставку текста в контексте веб-страницы.
+// content.js — content script
+// Speech recognition on the tab (when used) and text paste into page fields.
 // ===========================================
 
 class ContentSpeechRecognizer {
@@ -21,7 +21,7 @@ class ContentSpeechRecognizer {
       this.setupRecognitionListeners();
     } else {
       console.warn(
-        "Content Script: API распознавания речи не поддерживается. Вставка текста всё равно доступна.",
+        "Content script: Speech Recognition API not supported. Paste is still available.",
       );
     }
 
@@ -193,7 +193,7 @@ class ContentSpeechRecognizer {
         type: "recordingStarted",
       });
     } catch (e) {
-      console.error("Ошибка запуска распознавания:", e);
+      console.error("Failed to start recognition:", e);
       chrome.runtime.sendMessage({
         action: "recognitionError",
         error: "start-failed",
@@ -211,17 +211,17 @@ class ContentSpeechRecognizer {
 
   handleRecognitionStart() {
     this.isRecording = true;
-    console.log("Content Script: Распознавание начато.");
+    console.log("Content script: recognition started.");
   }
 
   handleRecognitionEnd() {
     this.isRecording = false;
-    console.log("Content Script: Распознавание завершено.");
+    console.log("Content script: recognition ended.");
     chrome.runtime.sendMessage({ action: "recordingStopped" });
   }
 
   handleRecognitionError(event) {
-    console.error("Content Script: Ошибка распознавания:", event.error);
+    console.error("Content script: recognition error:", event.error);
     chrome.runtime.sendMessage({
       action: "recognitionError",
       error: event.error,
@@ -370,7 +370,7 @@ class ContentSpeechRecognizer {
             target.selectionStart = newCursorPos;
             target.selectionEnd = newCursorPos;
           } catch (selectionError) {
-            // Для некоторых input[type] браузер не разрешает управлять выделением.
+            // Some input[type] elements do not allow programmatic selection.
           }
         }
 

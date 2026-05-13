@@ -1,153 +1,149 @@
-# Голос в Текст Pro 3.4
+# Voice to Text Pro 3.4
 
-Расширение для Google Chrome: голос в текст через **Web Speech API**, **AI-пунктуация**, проверка орфографии браузером, интерфейс в виде **боковой панели** (Chrome Side Panel).
+Google Chrome extension: speech to text via **Web Speech API**, **AI punctuation**, browser spell check, UI in the **Chrome Side Panel**.
 
-## Возможности
+## Features
 
-### Распознавание речи
+### Speech recognition
 
-- **10 языков** в настройке (коды BCP-47): русский (`ru-RU`), английский США (`en-US`), украинский (`uk-UA`), испанский, французский, немецкий, итальянский, японский, корейский, китайский (`zh-CN`)
-- Непрерывная запись с автоматическим перезапуском распознавания при обрыве
-- Промежуточные (interim) и финальные результаты
-- Основной сценарий — распознавание в **боковой панели**; на странице доступен **content script** (в т.ч. вставка черновика и запись с вкладки при необходимости)
+- **10 languages** in settings (BCP-47): Russian (`ru-RU`), US English (`en-US`), Ukrainian (`uk-UA`), Spanish, French, German, Italian, Japanese, Korean, Chinese (`zh-CN`)
+- Continuous capture with automatic recognition restart on drop
+- Interim and final results
+- Main flow: recognition in the **side panel**; **content script** on the page (draft paste and tab recording when needed)
 
-### Умная пунктуация
+### Smart punctuation
 
-- Четыре уровня: **Выкл**, **Низкий**, **Средний**, **Высокий**
-- Капитализация после знаков конца предложения: `.` `?` `!` `:` `;` перенос строки `…`
-- На уровне **Высокий** учитываются **языковые шаблоны** вопроса/восклицания (общий модуль `i18n.js` и в панели, и в content script)
+- Four levels: **Off**, **Low**, **Medium**, **High**
+- Capitalization after sentence endings: `.` `?` `!` `:` `;` newline `…`
+- **High** level uses **language-specific** question/exclamation patterns (`i18n.js` in both the panel and the content script)
 
-### Локализация интерфейса
+### UI localization
 
-- Язык из списка **«Язык распознавания»** одновременно задаёт **язык Web Speech API**, **атрибут `lang` у поля текста** и **язык всего UI боковой панели** (строки из `i18n.js`, метод `applyAppLocale()` в `sidepanel.js`)
-- Уведомление Chrome о начале записи и пункт **контекстного меню** «вставить черновик» берут формулировки из **`background.js`** в зависимости от сохранённого `chrome.storage.local.language`
-- Описания **горячих клавиш** в `manifest.json` (`commands.description`) остаются **на русском** — это статичные строки манифеста; смена языка UI на них не влияет
+- The **recognition language** list sets **Web Speech API language**, the text field **`lang` attribute**, and **the entire side panel UI** (`i18n.js`, `applyAppLocale()` in `sidepanel.js`)
+- Chrome **recording-started** notification and **context menu** “paste draft” strings come from **`background.js`** using `chrome.storage.local.language`
+- **Command descriptions** in `manifest.json` (`commands.description`) are **static** manifest strings; changing the panel UI language does not change them
 
-### Проверка орфографии
+### Spell check
 
-- Встроенная проверка браузера для textarea; язык проверки связан с выбранным языком ввода
+- Built-in browser check for the textarea; language follows the selected input language
 
-### Интерфейс
+### Interface
 
-- Боковая панель, тёмная тема, анимированный фон
-- Запись: **Начать**, **Пауза**, **Стоп**; работа с текстом: **Вставить**, **Копировать**, **Очистить**; закрытие панели
-- Статистика слов, ARIA и live-регион статуса
+- Side panel, dark theme, animated background
+- Recording: **Start**, **Pause**, **Stop**; text actions: **Insert**, **Copy**, **Clear**; close panel
+- Word stats, ARIA, live status region
 
-### Горячие клавиши
+### Keyboard shortcuts
 
-| Комбинация             | Действие                       |
-| ---------------------- | ------------------------------ |
-| `Ctrl+Shift+1`         | Начать запись                  |
-| `Ctrl+Shift+2`         | Остановить запись              |
-| `Ctrl+Shift+I`         | Вставить текст в активное поле |
-| `Ctrl+Shift+9`         | Открыть/закрыть боковую панель |
-| `Ctrl+C` в поле текста | Копировать текст               |
-| `Ctrl+Del`             | Очистить текст                 |
+| Shortcut              | Action                         |
+| --------------------- | ------------------------------ |
+| `Ctrl+Shift+1`        | Start recording                |
+| `Ctrl+Shift+2`        | Stop recording                 |
+| `Ctrl+Shift+I`        | Insert text into focused field |
+| `Ctrl+Shift+9`        | Open / close side panel        |
+| `Ctrl+C` in the field | Copy text                      |
+| `Ctrl+Del`            | Clear text                     |
 
-На macOS вместо `Ctrl` используется `Command` (см. `manifest.json` → `commands`).
+On macOS, `Command` is used instead of `Ctrl` (see `manifest.json` → `commands`).
 
-## Установка
+## Installation
 
-1. Склонируйте или скачайте папку проекта (корень с `manifest.json`)
-2. Откройте `chrome://extensions/`
-3. Включите **Режим разработчика**
-4. **Загрузить распакованное расширение** → выберите эту папку
+1. Clone or download the project folder (root contains `manifest.json`)
+2. Open `chrome://extensions/`
+3. Enable **Developer mode**
+4. **Load unpacked** → select this folder
 
-## Использование
+## Usage
 
-1. Нажмите иконку расширения — откроется боковая панель (если включено поведение по умолчанию Chrome)
-2. Выберите **язык** — обновятся и распознавание, и язык интерфейса панели
-3. При необходимости выберите уровень **AI-пунктуации**
-4. **Начать** или `Ctrl+Shift+1` — говорите в микрофон
-5. **Пауза** — остановка распознавания без потери текста; **Продолжить** — снова **Начать** запись
-6. **Стоп** — завершение сессии распознавания
-7. **Вставить** — отправка текста в активное поле на странице (нужен сфокусированный input/textarea/contenteditable)
-8. Черновик и настройки сохраняются в **`chrome.storage.local`**
+1. Click the extension icon — the side panel opens (per Chrome default behavior)
+2. Choose **language** — updates both recognition and panel UI
+3. Optionally set **AI punctuation** level
+4. **Start** or `Ctrl+Shift+1` — speak into the microphone
+5. **Pause** — stops recognition without losing text; **Resume** continues recording
+6. **Stop** — ends the recognition session
+7. **Insert** — sends text to the focused field on the page (`input` / `textarea` / `contenteditable`)
+8. Draft and settings are stored in **`chrome.storage.local`**
 
-## Поддерживаемые языки (распознавание и UI панели)
+## Supported languages (recognition + panel UI)
 
-| Язык             | Код   |
-| ---------------- | ----- |
-| Русский          | ru-RU |
-| Английский (США) | en-US |
-| Украинский       | uk-UA |
-| Испанский        | es-ES |
-| Французский      | fr-FR |
-| Немецкий         | de-DE |
-| Итальянский      | it-IT |
-| Японский         | ja-JP |
-| Корейский        | ko-KR |
-| Китайский        | zh-CN |
+| Language     | Code  |
+| ------------ | ----- |
+| Russian      | ru-RU |
+| English (US) | en-US |
+| Ukrainian    | uk-UA |
+| Spanish      | es-ES |
+| French       | fr-FR |
+| German       | de-DE |
+| Italian      | it-IT |
+| Japanese     | ja-JP |
+| Korean       | ko-KR |
+| Chinese      | zh-CN |
 
-## Данные в хранилище (`chrome.storage.local`)
+## `chrome.storage.local` keys
 
-| Ключ              | Назначение                                               |
-| ----------------- | -------------------------------------------------------- |
-| `language`        | Код языка (BCP-47), единый источник для UI и STT         |
-| `autoPunctuation` | Уровень AI-пунктуации: `off` / `low` / `medium` / `high` |
-| `textDraft`       | Черновик текста из панели                                |
-| `sidePanelOpen`   | Флаг для переключения панели по горячей клавише          |
+- **`language`** — BCP-47 code; single source for UI and STT.
+- **`autoPunctuation`** — Level: `off` / `low` / `medium` / `high`.
+- **`textDraft`** — Panel text draft.
+- **`sidePanelOpen`** — Flag for hotkey side panel toggle.
 
-## Структура проекта (основные файлы)
+## Project layout (main files)
 
-| Файл             | Роль                                                                  |
-| ---------------- | --------------------------------------------------------------------- |
-| `manifest.json`  | Manifest V3, права, side panel, content scripts, команды              |
-| `background.js`  | Service worker: команды, меню, уведомления, вставка, `updateSettings` |
-| `sidepanel.html` | Разметка панели; подключает `i18n.js`, `sidepanel.js`                 |
-| `sidepanel.js`   | Логика панели, распознавание, `applyAppLocale()`, сохранение настроек |
-| `i18n.js`        | Словари UI и regex пунктуации; `globalThis.AppI18n`                   |
-| `content.js`     | Вставка; распознавание на вкладке; пунктуация через `i18n.js`         |
-| `styles.css`     | Стили панели                                                          |
-| `icons/`         | Иконки 16, 48, 128                                                    |
+- **`manifest.json`** — MV3 manifest, permissions, side panel, content scripts, commands.
+- **`background.js`** — Service worker: commands, menu, notifications, paste, `updateSettings`.
+- **`sidepanel.html`** — Panel markup; loads `i18n.js`, `sidepanel.js`.
+- **`sidepanel.js`** — Panel logic, recognition, `applyAppLocale()`, settings persistence.
+- **`i18n.js`** — UI strings + punctuation regex; `globalThis.AppI18n`.
+- **`content.js`** — Paste; optional tab recognition; punctuation via `i18n.js`.
+- **`styles.css`** — Panel styles.
+- **`icons/`** — 16, 48, 128 icons.
 
-## Особенности боковой панели и страницы
+## Side panel vs page
 
-- Панель не перекрывает страницу целиком; черновик и язык общие через storage
-- **Контекстное меню** по правому клику в редактируемых полях: вставка сохранённого черновика; при отсутствии скрипта на вкладке фон может **инжектить** `i18n.js` и `content.js` (разрешение `scripting`)
+- The panel does not cover the whole page; draft and language are shared via storage
+- **Context menu** on editable fields: paste saved draft; if the tab has no content script, the service worker may **inject** `i18n.js` and `content.js` (`scripting` permission)
 
-## Решение проблем
+## Troubleshooting
 
-### Нет доступа к микрофону
+### No microphone access
 
-См. блок инструкций в панели: замок в адресной строке → настройки сайта → микрофон → обновить страницу.
+See the in-panel instructions: lock icon in the address bar → site settings → microphone → reload.
 
-### Не работает распознавание
+### Recognition not working
 
-- Нужен **интернет** (облачный Web Speech API в Chrome)
-- Рабочий микрофон и разрешение сайта/расширения
+- **Network** required (Chrome’s cloud-backed Web Speech API)
+- Working microphone and site/extension permission
 
-### Текст не вставляется
+### Text does not insert
 
-- Сфокусируйте поле ввода; часть сайтов (например, сложные редакторы) может ограничивать вставку
+- Focus an input field; some sites (rich editors) may block insertion
 
-## Технологии
+## Tech stack
 
 - **Web Speech API** (`SpeechRecognition` / `webkitSpeechRecognition`)
 - **Chrome Extensions Manifest V3**
 - **Side Panel API**
-- **chrome.storage.local**, **chrome.scripting** (инжект при вставке)
-- **CSS** (в т.ч. `prefers-reduced-motion`)
-- **ES6+**, модуль строк **`i18n.js`** без зависимости от DOM (пригоден и для worker при `importScripts`)
+- **`chrome.storage.local`**, **`chrome.scripting`** (inject on paste)
+- **CSS** (including `prefers-reduced-motion`)
+- **ES6+**; **`i18n.js`** has no DOM dependency (safe for `importScripts` in a worker)
 
-## Системные требования
+## Requirements
 
-- **Google Chrome** с поддержкой Side Panel и MV3 (ориентир — **114+**)
-- Микрофон
-- Сеть для распознавания речи
+- **Google Chrome** with Side Panel + MV3 (target **114+**)
+- Microphone
+- Network for speech recognition
 
-## Обновление
+## Updating
 
-В `chrome://extensions/` нажмите **Обновить** на карточке расширения после замены файлов.
+In `chrome://extensions/`, click **Reload** on the extension card after replacing files.
 
-## Лицензия
+## License
 
 MIT License
 
-## Автор
+## Author
 
-Голос в Текст Pro Team
+[Averixor](https://github.com/Averixor)
 
-## История версий
+## Version history
 
-Кратко по веткам см. **`CHANGELOG.md`**. Текущая версия в **`manifest.json`**: **3.4**.
+See **`CHANGELOG.md`**. Current version in **`manifest.json`**: **3.4**.

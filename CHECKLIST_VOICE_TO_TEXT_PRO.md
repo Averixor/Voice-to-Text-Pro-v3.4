@@ -1,138 +1,138 @@
-# ЧЕК-ЛИСТ ПРОЕКТА «ГОЛОС В ТЕКСТ ПРО» v3.4
+# Voice to Text Pro — project checklist v3.4
 
-## ОПИСАНИЕ ПРОЕКТА
+## Project description
 
-**Голос в Текст Pro** — расширение для Google Chrome (Manifest V3): преобразование речи в текст через Web Speech API, **четыре уровня AI-пунктуации**, проверка орфографии в поле ввода, интерфейс в виде **боковой панели**. Выбранный **язык распознавания** одновременно задаёт **язык интерфейса панели** (модуль `i18n.js`). Уведомление о начале записи и пункт контекстного меню локализованы в **`background.js`** по значению `storage.language`.
+**Voice to Text Pro** is a Google Chrome extension (Manifest V3): speech to text via Web Speech API, **four AI punctuation levels**, spell check in the input field, UI in the **side panel**. The selected **recognition language** is also the **panel UI language** (`i18n.js`). Recording-started notification and context menu item are localized in **`background.js`** from `storage.language`.
 
 ---
 
-## СТРУКТУРА ПРОЕКТА
+## Project structure
 
 ```text
 voice-to-text-pro-v3.3-fixed/
-├── manifest.json                 # MV3: права, side_panel, content_scripts, commands
-├── background.js                 # Service worker: меню, уведомления, команды, sendPasteToTab
-├── i18n.js                       # Словари UI + regex пунктуации; globalThis.AppI18n
-├── sidepanel.html                # Разметка панели (i18n.js + sidepanel.js)
-├── sidepanel.js                  # Распознавание в панели, applyAppLocale(), storage
-├── content.js                    # Вставка текста, распознавание на вкладке; использует i18n.js
-├── styles.css                    # Стили боковой панели
+├── manifest.json                 # MV3: permissions, side_panel, content_scripts, commands
+├── background.js                 # Service worker: menu, notifications, commands, sendPasteToTab
+├── i18n.js                       # UI strings + punctuation regex; globalThis.AppI18n
+├── sidepanel.html                # Panel markup (i18n.js + sidepanel.js)
+├── sidepanel.js                  # Panel recognition, applyAppLocale(), storage
+├── content.js                    # Paste, optional tab recognition; uses i18n.js
+├── styles.css                    # Side panel styles
 ├── icons/
 │   ├── icon16.png
 │   ├── icon48.png
 │   └── icon128.png
-├── README.md                     # Документация пользователя и разработчика
-├── CHANGELOG.md                  # История изменений
+├── README.md                     # User / developer documentation
+├── CHANGELOG.md                  # Change history
 └── CHECKLIST_VOICE_TO_TEXT_PRO.md
 ```
 
 ---
 
-## ВЫПОЛНЕННЫЕ ИСПРАВЛЕНИЯ И ФУНКЦИИ
+## Completed fixes and features
 
-### v3.3 — критические и синтаксические исправления
+### v3.3 — critical and syntax fixes
 
-- [x] `background.js` — `return true` / `sendResponse` в обработчиках сообщений
-- [x] `background.js` — логика закрытия панели и side panel
-- [x] `content.js` — вставка, сообщения, настройки
-- [x] `sidepanel.js` — insertBtn, пунктуация, `sendMessage` вместо `connect`
-- [x] `sidepanel.html` / `styles.css` — разметка и стили под фактический UI
-- [x] `manifest.json` — версия 3.3 → далее 3.4
+- [x] `background.js` — `return true` / `sendResponse` in message handlers
+- [x] `background.js` — panel close and side panel wiring
+- [x] `content.js` — paste, messages, settings
+- [x] `sidepanel.js` — insertBtn, punctuation, `sendMessage` instead of `connect`
+- [x] `sidepanel.html` / `styles.css` — markup and styles for actual UI
+- [x] `manifest.json` — version 3.3 → 3.4
 
-### v3.4 — UX, пауза, доступность, локализация, надёжность
+### v3.4 — UX, pause, accessibility, localization, reliability
 
-- [x] **Пауза / Продолжить** — полный цикл без потери текста
-- [x] Два блока кнопок: запись и работа с текстом; подписи всегда видны
-- [x] **Закрытие панели** — `window.close()` + `tabs.query` в background
-- [x] **Капитализация** — опора на `finalTranscript.trimEnd().slice(-1)`
-- [x] Загрузка уровня **`off`** пунктуации (проверка не только truthy)
-- [x] `showTransientStatus()` — временные сообщения без сброса режима
-- [x] Fallback **`SpeechRecognition`** в панели
-- [x] `e.repeat` в горячих клавишах
-- [x] ARIA, `role="status"`, visually-hidden label, `status-idle` при загрузке
-- [x] `closeSidePanel()` — стоп записи, сохранение черновика
-- [x] Обработка `recognitionError` с сбросом флагов
-- [x] **`i18n.js`** + **`applyAppLocale()`** — язык списка = язык UI панели
-- [x] **`globalThis.AppI18n`** — безопасный экспорт (в т.ч. для worker при подключении)
-- [x] **`background.js`**: `updateSettings` сохраняет `language` и/или `autoPunctuation` частично
-- [x] Локализация **уведомления** и **контекстного меню** по `storage.language`; обновление меню при смене языка + fallback при ошибке `update`
-- [x] **`sendPasteToTab`** + **`chrome.scripting.executeScript`** (`i18n.js`, `content.js`), если content script на вкладке отсутствует
-- [x] **`content.js`**: пунктуация high через `AppI18n.getPack` (паритет с панелью)
-- [x] Документация: README, CHANGELOG, CHECKLIST
-
----
-
-## СПИСОК ФАЙЛОВ И СМЫСЛ ИЗМЕНЕНИЙ (v3.4)
-
-- **`manifest.json`** — версия 3.4; `content_scripts`: `i18n.js`, `content.js`; право `scripting`.
-- **`i18n.js`** — локализация UI и языковые regex для пунктуации; `globalThis.AppI18n`.
-- **`background.js`** — меню и уведомления по `storage.language`; `updateSettings` (частичное сохранение полей); `sendPasteToTab` + при необходимости инжект скриптов.
-- **`sidepanel.js`** — пауза, `applyAppLocale()`, transient status, капитализация, закрытие панели, a11y.
-- **`sidepanel.html`** — подключение `i18n.js`; разметка под паузу и доступность.
-- **`content.js`** — пунктуация через `AppI18n`; вставка; отслеживание редактируемых полей.
-- **`styles.css`** — стили панели, доступность, медиазапросы.
-- **Документация** — `README.md`, `CHANGELOG.md`, `CHECKLIST_VOICE_TO_TEXT_PRO.md` (актуализация под код).
+- [x] **Pause / Resume** — full cycle without text loss
+- [x] Two button groups: recording and text actions; labels always visible
+- [x] **Close panel** — `window.close()` + `tabs.query` in background
+- [x] **Capitalization** — based on `finalTranscript.trimEnd().slice(-1)`
+- [x] Load punctuation level **`off`** (not only truthy check)
+- [x] `showTransientStatus()` — transient messages without mode reset
+- [x] **`SpeechRecognition`** fallback in the panel
+- [x] `e.repeat` ignored in keyboard handler
+- [x] ARIA, `role="status"`, visually-hidden label, `status-idle` on load
+- [x] `closeSidePanel()` — stop recording, save draft
+- [x] `recognitionError` clears flags correctly
+- [x] **`i18n.js`** + **`applyAppLocale()`** — list language = panel UI language
+- [x] **`globalThis.AppI18n`** — safe export (including worker via `importScripts`)
+- [x] **`background.js`**: `updateSettings` partially saves `language` and/or `autoPunctuation`
+- [x] **Notification** and **context menu** follow `storage.language`; menu update + fallback on `update` error
+- [x] **`sendPasteToTab`** + **`chrome.scripting.executeScript`** (`i18n.js`, `content.js`) when content script missing
+- [x] **`content.js`**: high punctuation via `AppI18n.getPack` (parity with panel)
+- [x] Documentation: README, CHANGELOG, CHECKLIST
 
 ---
 
-## РЕЗУЛЬТАТЫ ТЕСТИРОВАНИЯ (чек-лист ручной проверки)
+## File roles in v3.4
 
-### Функциональные тесты
-
-- Запуск / остановка распознавания — пройден
-- Пауза и продолжение — пройден
-- Автоперезапуск распознавания при обрыве — пройден
-- Вставка в input / textarea — пройден
-- Вставка в contentEditable — пройден
-- Копирование / очистка — пройден
-- Закрытие панели — пройден
-- Сохранение черновика и настроек — пройден
-- Смена языка (UI панели + STT + spellcheck) — проверить перед релизом
-
-### UI и локализация
-
-- Переходы idle → recording → paused → idle — пройден
-- Кнопки start / pause / stop — пройден
-- Смена языка в списке обновляет строки интерфейса — проверить перед релизом
-- Уведомление и контекстное меню на языке из `storage.language` — проверить перед релизом
-
-### Горячие клавиши
-
-- `Ctrl+Shift+1` — начать запись — пройден
-- `Ctrl+Shift+2` — остановить запись — пройден
-- `Ctrl+Shift+I` — вставить текст — пройден
-- `Ctrl+Shift+9` — открыть/закрыть панель — пройден
-- `Ctrl+C` / `Ctrl+Del` в поле — пройден
-
-### Пунктуация
-
-- **off** — без автодобавления знаков — пройден
-- **low** — точка в конце сегмента — пройден
-- **medium** — точка при достаточной длине — пройден
-- **high** — `?` / `!` / `.` по языковым правилам (`i18n.js`) — пройден
+- **`manifest.json`** — v3.4; `content_scripts`: `i18n.js`, `content.js`; `scripting` permission.
+- **`i18n.js`** — UI localization and punctuation regex; `globalThis.AppI18n`.
+- **`background.js`** — menu/notification by language; `updateSettings` (partial fields); `sendPasteToTab` + optional script inject.
+- **`sidepanel.js`** — pause, `applyAppLocale()`, transient status, capitalization, panel close, a11y.
+- **`sidepanel.html`** — loads `i18n.js`; markup for pause and accessibility.
+- **`content.js`** — punctuation via `AppI18n`; paste; editable-field tracking.
+- **`styles.css`** — panel styles, accessibility, media queries.
+- **Docs** — `README.md`, `CHANGELOG.md`, `CHECKLIST_VOICE_TO_TEXT_PRO.md` (aligned with code).
 
 ---
 
-## РЕКОМЕНДАЦИИ ДЛЯ ДАЛЬНЕЙШЕГО РАЗВИТИЯ
+## Manual test checklist
 
-1. Экспорт текста в файлы (.txt, .md)
-2. История сессий
-3. Голосовые команды
-4. Облачное резервное копирование
-5. Оффлайн-распознавание (отдельный движок)
-6. `_locales` в манифесте для описаний `commands` на языке UI
-7. Темы и размер шрифта
+### Functional
+
+- Start / stop recognition — pass
+- Pause and resume — pass
+- Auto-restart on recognition drop — pass
+- Paste into `input` / `textarea` — pass
+- Paste into `contentEditable` — pass
+- Copy / clear — pass
+- Close panel — pass
+- Draft and settings persistence — pass
+- Language change (UI + STT + spellcheck) — verify before release
+
+### UI and localization
+
+- Transitions idle → recording → paused → idle — pass
+- Start / pause / stop buttons — pass
+- Language list updates panel strings — verify before release
+- Notification and context menu match `storage.language` — verify before release
+
+### Shortcuts
+
+- `Ctrl+Shift+1` start — pass
+- `Ctrl+Shift+2` stop — pass
+- `Ctrl+Shift+I` insert — pass
+- `Ctrl+Shift+9` toggle panel — pass
+- `Ctrl+C` / `Ctrl+Del` in field — pass
+
+### Punctuation
+
+- **off** — no auto punctuation — pass
+- **low** — period at segment end — pass
+- **medium** — period when length threshold met — pass
+- **high** — `?` / `!` / `.` via language rules (`i18n.js`) — pass
 
 ---
 
-## ПРИМЕЧАНИЯ
+## Future ideas
 
-- Критичные баги из чек-листа v3.3 закрыты; v3.4 дополняет UX и локализацию
-- Web Speech API в Chrome опирается на сеть
-- Нужны разрешения: микрофон (сайт / контекст использования), интернет
+1. Export text to files (.txt, .md)
+2. Session history
+3. Voice commands
+4. Cloud backup
+5. Offline recognition (separate engine)
+6. `_locales` in manifest for `commands` descriptions per UI language
+7. Themes and font size
 
 ---
 
-**Дата обновления документации:** май 2026
-**Версия проекта (manifest):** 3.4
-**Статус:** готово к публикации после регрессионной проверки смены языка
+## Notes
+
+- Critical v3.3 checklist items closed; v3.4 adds UX and localization
+- Chrome Web Speech API depends on network
+- Permissions: microphone (site / usage context), internet
+
+---
+
+**Documentation updated:** May 2026
+**Project version (`manifest`):** 3.4
+**Status:** ready to ship after regression on language switching

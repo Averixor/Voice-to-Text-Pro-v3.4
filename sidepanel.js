@@ -471,8 +471,8 @@ class SpeechToTextPro {
   }
 
   /**
-   * Показ сообщения в строке статуса без сброса режима записи / паузы.
-   * @param {boolean} [asError] — если true, временно подсветить карточку как ошибку (idle/error UI).
+   * Show a transient message in the status line without resetting recording / pause mode.
+   * @param {boolean} [asError] — if true, briefly style the card as an error (idle/error UI).
    */
   showTransientStatus(message, durationMs = 2000, asError = false) {
     clearTimeout(this._transientStatusTimer);

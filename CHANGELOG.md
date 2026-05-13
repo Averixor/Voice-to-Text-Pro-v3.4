@@ -2,82 +2,82 @@
 
 ## 3.4 — 2026-05-12
 
-### Добавлено
+### Added
 
-- Кнопка **Пауза** — приостанавливает распознавание, сохраняя текст; кнопка «Начать» переключается на **Продолжить**.
-- Метод `showTransientStatus()` — временные уведомления в строке статуса без сброса режима записи / паузы.
-- Поддержка стандартного `SpeechRecognition` (fallback от `webkitSpeechRecognition`) в боковой панели.
-- Класс `.visually-hidden` для скрытого `<label>` поля ввода.
-- ARIA-атрибуты: `role="status"`, `aria-live="polite"`, `aria-hidden` на декоративных элементах, `aria-label` на кнопке закрытия, `role="dialog"` на инструкции микрофона.
-- **`i18n.js`** — словари UI и правила «умной» пунктуации (`punctQuestionRe` / `punctExclaimRe`) для десяти языков; экспорт в `globalThis.AppI18n` (совместимо с side panel, content script и потенциальным подключением в service worker).
-- **Локализация панели**: выбранный в списке язык распознавания задаёт язык всего интерфейса боковой панели (`applyAppLocale()` в `sidepanel.js`).
-- **Локализация в `background.js`**: заголовок и текст уведомления о начале записи и пункт контекстного меню «вставить черновик» зависят от `chrome.storage.local.language`; при смене языка меню обновляется (`chrome.contextMenus.update` с откатом на `createOrRefreshContextMenu` при ошибке).
-- В **`manifest.json`** разрешение **`scripting`**: при вставке из контекстного меню, если на вкладке ещё нет content script, `background.js` через `chrome.scripting.executeScript` подгружает `i18n.js` и `content.js` (`sendPasteToTab`).
+- **Pause** button — pauses recognition while keeping text; **Start** becomes **Resume**.
+- `showTransientStatus()` — transient status line messages without resetting recording / pause mode.
+- Standard **`SpeechRecognition`** fallback (from `webkitSpeechRecognition`) in the side panel.
+- **`.visually-hidden`** for the hidden `<label>` on the text field.
+- **ARIA**: `role="status"`, `aria-live="polite"`, `aria-hidden` on decorative nodes, `aria-label` on close, `role="dialog"` on microphone instructions.
+- **`i18n.js`** — UI strings and smart-punctuation regex (`punctQuestionRe` / `punctExclaimRe`) for ten locales; exported as `globalThis.AppI18n` (side panel, content script, and optional service worker via `importScripts`).
+- **Panel localization**: the selected recognition language drives the whole side panel UI (`applyAppLocale()` in `sidepanel.js`).
+- **`background.js` localization**: recording-started notification title/body and context-menu “paste draft” depend on `chrome.storage.local.language`; menu title updates on language change (`chrome.contextMenus.update` with fallback to `createOrRefreshContextMenu` on error).
+- **`scripting` permission** in `manifest.json`: when pasting from the context menu, if the tab has no content script, `background.js` injects `i18n.js` and `content.js` via `chrome.scripting.executeScript` (`sendPasteToTab`).
 
-### Исправлено
+### Fixed
 
-- **Кнопка закрытия панели** — раньше не работала: `sender.tab` для side panel всегда `undefined`, и `chrome.sidePanel.setOptions()` не вызывался. Теперь `window.close()` + поиск активной вкладки в `background.js`.
-- **Автоматическая капитализация** — после точки не ставилась заглавная буква, потому что `this.output.value.slice(-1)` возвращал пробел, а не `.`. Теперь берётся `this.finalTranscript.trimEnd().slice(-1)`.
-- **Загрузка уровня пунктуации `off`** — `if (result.autoPunctuation)` пропускала falsy-строку `'off'`. Заменено на `!== undefined && !== null`.
-- Временные сообщения (копировать, очистить, вставить) больше не сбрасывают UI из режима записи / паузы.
-- Ошибки при паузе / продолжении: состояние корректно откатывается (пауза → запись, продолжение → пауза).
-- `recognitionError` из background корректно скидывает `isRecording` и `isPaused` перед обновлением UI.
-- Игнорирование повторных нажатий клавиш (`e.repeat`).
-- Начальный текст статуса в HTML и JS теперь совпадает: «Готов к записи».
-- Карточка статуса при загрузке имеет класс `status-idle`.
-- **`background.js` / `updateSettings`**: в storage сохраняются только переданные поля — и `autoPunctuation`, и `language` (частичное обновление без затирания языка).
-- **`content.js`**: пунктуация уровня **high** использует те же языковые шаблоны, что и панель (`globalThis.AppI18n.getPack(this.currentLanguage)`), а не только проверку символов `?` / `!` в тексте STT.
+- **Close panel** — previously broken because `sender.tab` is always `undefined` for the side panel and `chrome.sidePanel.setOptions()` was not called. Now `window.close()` plus active-tab lookup in `background.js`.
+- **Auto-capitalization** — uppercase after a period failed because `this.output.value.slice(-1)` returned a space, not `.`. Now uses `this.finalTranscript.trimEnd().slice(-1)`.
+- **Loading punctuation `off`** — `if (result.autoPunctuation)` skipped the string `'off'`. Replaced with `!== undefined && !== null`.
+- Transient messages (copy, clear, insert) no longer reset recording / pause UI.
+- Pause / resume error paths restore state correctly.
+- `recognitionError` from the background clears `isRecording` and `isPaused` before updating UI.
+- Ignore repeated key events (`e.repeat`).
+- Initial status text matches between HTML and JS (“ready to record” in the default locale).
+- Status card starts with class `status-idle`.
+- **`background.js` / `updateSettings`**: only provided fields are written — both `autoPunctuation` and `language` (partial update, no accidental language wipe).
+- **`content.js`**: **high** punctuation uses the same language patterns as the panel (`globalThis.AppI18n.getPack(this.currentLanguage)`), not only raw `?` / `!` in STT output.
 
-### Изменено
+### Changed
 
-- Кнопки разделены на два блока: **запись** (Начать, Пауза, Стоп) и **текст** (Вставить, Копировать, Очистить).
-- Кнопки отображаются вертикально (иконка + подпись), подписи больше не скрываются в узкой панели.
-- Версия в `manifest.json`, `sidepanel.html` и документах обновлена до **3.4**.
-- `closeSidePanel()` теперь останавливает запись и сохраняет черновик перед закрытием.
-- `<title>` в `sidepanel.html`: «Голос в Текст Pro» (единый стиль названия без «боковая панель» в бренде).
-- В **`manifest.json`** для content scripts указан порядок **`["i18n.js", "content.js"]`**; в боковой панели подключаются **`i18n.js`** и **`sidepanel.js`**.
+- Buttons split into **recording** (Start, Pause, Stop) and **text** (Insert, Copy, Clear).
+- Buttons show icon + label vertically; labels no longer hide in a narrow panel.
+- Version in `manifest.json`, `sidepanel.html`, and docs set to **3.4**.
+- `closeSidePanel()` stops recording and saves the draft before closing.
+- `<title>` in `sidepanel.html`: **Voice to Text Pro** style (unified branding without “side panel” in the product name).
+- **`manifest.json`** content script order **`["i18n.js", "content.js"]`**; side panel loads **`i18n.js`** then **`sidepanel.js`**.
 
 ---
 
 ## 3.3 — 2026-05-06
 
-### Исправлено (v3.3)
+### Fixed (v3.3)
 
-- `manifest.json`: версия обновлена; боковая панель через **`side_panel`** и **`chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })`** (открытие по клику на иконку расширения).
+- `manifest.json`: version bump; side panel via **`side_panel`** and **`chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })`** (open on extension icon click).
 
-- `background.js`: добавлены корректные ответы `sendResponse`, обработка сообщений, команды для side panel / content script, контекстное меню, уведомления, закрытие панели через активную вкладку.
+- `background.js`: `sendResponse` handling, messages, commands for side panel / content script, context menu, notifications, panel close via active tab.
 
-- `content.js`: исправлена логика вставки и условий, отслеживание последнего редактируемого поля, вставка в `input`, `textarea`, `contenteditable`.
+- `content.js`: paste logic, conditions, last-editable tracking, paste into `input`, `textarea`, `contenteditable`.
 
-- `content.js`: ответы на сообщения `startRecording`, `stopRecording`, `pasteSelection`, `updateSettings`.
+- `content.js`: message handlers `startRecording`, `stopRecording`, `pasteSelection`, `updateSettings`.
 
-- `sidepanel.js`: обработчик кнопки `insertBtn`.
+- `sidepanel.js`: `insertBtn` handler.
 
-- `sidepanel.js`: `none` заменён / нормализован в `off` для режима пунктуации.
+- `sidepanel.js`: `none` normalized to `off` for punctuation mode.
 
-- `sidepanel.js`: `chrome.runtime.connect()` заменён на `chrome.runtime.sendMessage()`.
+- `sidepanel.js`: `chrome.runtime.connect()` replaced with `chrome.runtime.sendMessage()`.
 
-- `sidepanel.js`: очистка `saveTimeout` при закрытии панели.
+- `sidepanel.js`: clear `saveTimeout` when closing the panel.
 
-- `sidepanel.js`: исправлена логика форматирования текста (AI-пунктуация).
+- `sidepanel.js`: text formatting / AI punctuation logic.
 
-- `sidepanel.html`: элементы интерфейса и анимации записи; удалена зависимость от отсутствующего `editorPlaceholder`.
+- `sidepanel.html`: UI and recording animation; removed dependency on missing `editorPlaceholder`.
 
-- `styles.css`: `.hidden`, стили кнопок, `prefers-reduced-motion`.
+- `styles.css`: `.hidden`, button styles, `prefers-reduced-motion`.
 
-- `README.md`: требования, ограничения, быстрый тест и список исправлений.
+- `README.md`: requirements, limits, quick test, fix list.
 
-### Улучшено (v3.3)
+### Improved (v3.3)
 
-- Иконки приведены к размерам 16×16, 48×48, 128×128.
+- Icons resized to 16×16, 48×48, 128×128.
 
-- Более мягкая обработка ошибок микрофона, сети и отсутствующего content script.
+- Softer handling of microphone, network, and missing content script errors.
 
-- Черновик текста сохраняется надёжнее.
+- More reliable text draft persistence.
 
 ---
 
-## 3.2 и ранее
+## 3.2 and earlier
 
-- **3.2** — боковая панель, горячие клавиши, контекстное меню (кратко; детали в истории репозитория при наличии).
-- **3.1** — первая публичная ветка с базовым распознаванием.
+- **3.2** — side panel, shortcuts, context menu (summary only; see repo history if available).
+- **3.1** — first public branch with basic recognition.

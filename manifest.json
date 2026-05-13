@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Голос в Текст Pro",
+  "name": "Voice to Text Pro",
   "version": "3.4",
-  "description": "Продвинутое преобразование голоса в текст с проверкой орфографии и пунктуации",
+  "description": "Advanced speech-to-text with spell check and AI punctuation in the Chrome side panel",
   "permissions": [
     "activeTab",
     "storage",
@@ -36,21 +36,21 @@
         "default": "Ctrl+Shift+1",
         "mac": "Command+Shift+1"
       },
-      "description": "Начать запись"
+      "description": "Start recording"
     },
     "stop_recording": {
       "suggested_key": {
         "default": "Ctrl+Shift+2",
         "mac": "Command+Shift+2"
       },
-      "description": "Остановить запись"
+      "description": "Stop recording"
     },
     "toggle_side_panel": {
       "suggested_key": {
         "default": "Ctrl+Shift+9",
         "mac": "Command+Shift+9"
       },
-      "description": "Открыть/закрыть боковую панель"
+      "description": "Open or close the side panel"
     }
   }
 }

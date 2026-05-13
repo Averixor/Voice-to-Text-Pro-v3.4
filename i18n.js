@@ -1,6 +1,6 @@
 /**
- * Локалізація UI: ключ = BCP-47 (як у списку мови розпізнавання).
- * Використовується як мова інтерфейсу за вибраним значенням #language.
+ * UI i18n: locale key = BCP-47 (same as the recognition language list).
+ * Drives side panel UI for the selected `#language` value.
  */
 (function () {
   const FALLBACK = "en-US";

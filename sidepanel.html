@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Голос в Текст Pro</title>
+    <title>Voice to Text Pro</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -30,16 +30,16 @@
           <div class="logo">
             <div class="logo-icon">🎤</div>
             <div class="logo-text">
-              <h1>Голос в Текст Pro</h1>
-              <span class="tagline">AI-пунктуация • Проверка орфографии</span>
+              <h1>Voice to Text Pro</h1>
+              <span class="tagline">AI punctuation • Spell check</span>
             </div>
           </div>
           <button
             type="button"
             class="icon-btn close-btn"
             id="closeBtn"
-            title="Закрыть панель"
-            aria-label="Закрыть панель"
+            title="Close panel"
+            aria-label="Close panel"
           >
             <svg
               width="16"
@@ -72,7 +72,7 @@
             <div class="wave-bar"></div>
           </div>
           <span id="status" role="status" aria-live="polite" aria-atomic="true"
-            >Готов к записи</span
+            >Ready to record</span
           >
           <div class="recording-time" id="recordingTime" style="display: none">
             <svg
@@ -96,16 +96,14 @@
         <section
           class="editor-section"
           id="editor-container"
-          aria-label="Область распознанного текста"
+          aria-label="Recognized text area"
         >
           <div class="output-area">
-            <label for="output" class="visually-hidden"
-              >Распознанный текст</label
-            >
+            <label for="output" class="visually-hidden">Recognized text</label>
             <textarea
               id="output"
               name="output"
-              placeholder="Начните говорить..."
+              placeholder="Start speaking..."
               rows="10"
               spellcheck="true"
               autocomplete="off"
@@ -115,11 +113,11 @@
             class="editor-overlay"
             id="editorOverlay"
             role="region"
-            aria-label="Подсказка"
+            aria-label="Hint"
           >
             <div class="overlay-icon" aria-hidden="true">🎙️</div>
-            <div class="overlay-text">Нажмите «Начать» и говорите</div>
-            <div class="overlay-subtext">Текст появится здесь</div>
+            <div class="overlay-text">Press “Start” and speak</div>
+            <div class="overlay-subtext">Text will appear here</div>
           </div>
         </section>
 
@@ -129,7 +127,7 @@
               type="button"
               class="control-btn primary-btn"
               id="startBtn"
-              title="Начать запись (Ctrl+Shift+1)"
+              title="Start recording (Ctrl+Shift+1)"
             >
               <svg
                 width="20"
@@ -142,13 +140,13 @@
               >
                 <polygon points="5 3 19 12 5 21 5 3"></polygon>
               </svg>
-              <span>Начать</span>
+              <span>Start</span>
             </button>
             <button
               type="button"
               class="control-btn hidden"
               id="pauseBtn"
-              title="Пауза — приостановить распознавание"
+              title="Pause recognition"
             >
               <svg
                 width="20"
@@ -162,13 +160,13 @@
                 <rect x="6" y="4" width="4" height="16" rx="1"></rect>
                 <rect x="14" y="4" width="4" height="16" rx="1"></rect>
               </svg>
-              <span>Пауза</span>
+              <span>Pause</span>
             </button>
             <button
               type="button"
               class="control-btn secondary-btn hidden"
               id="stopBtn"
-              title="Остановить запись (Ctrl+Shift+2)"
+              title="Stop recording (Ctrl+Shift+2)"
             >
               <svg
                 width="20"
@@ -181,7 +179,7 @@
               >
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
               </svg>
-              <span>Стоп</span>
+              <span>Stop</span>
             </button>
           </div>
           <div class="controls-grid controls-actions">
@@ -189,7 +187,7 @@
               type="button"
               class="control-btn"
               id="insertBtn"
-              title="Вставить текст в активное поле (Ctrl+Shift+I)"
+              title="Insert into focused field (Ctrl+Shift+I)"
             >
               <svg
                 width="20"
@@ -215,13 +213,13 @@
                 <path d="M4 12h.01" />
                 <path d="M4 8h.01" />
               </svg>
-              <span>Вставить</span>
+              <span>Insert</span>
             </button>
             <button
               type="button"
               class="control-btn"
               id="copyBtn"
-              title="Копировать текст"
+              title="Copy text"
             >
               <svg
                 width="20"
@@ -237,13 +235,13 @@
                   d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
                 ></path>
               </svg>
-              <span>Копировать</span>
+              <span>Copy</span>
             </button>
             <button
               type="button"
               class="control-btn danger-btn"
               id="clearBtn"
-              title="Очистить текст (Ctrl+Del)"
+              title="Clear text (Ctrl+Del)"
             >
               <svg
                 width="20"
@@ -260,34 +258,34 @@
                 <line x1="18" y1="9" x2="12" y2="15"></line>
                 <line x1="12" y1="9" x2="18" y2="15"></line>
               </svg>
-              <span>Очистить</span>
+              <span>Clear</span>
             </button>
           </div>
         </section>
 
         <section class="config-section">
           <div class="config-item">
-            <label for="language">Язык распознавания:</label>
+            <label for="language">Recognition language:</label>
             <select id="language">
-              <option value="ru-RU">Русский</option>
-              <option value="en-US">Английский (США)</option>
-              <option value="uk-UA">Украинский</option>
-              <option value="es-ES">Испанский</option>
-              <option value="fr-FR">Французский</option>
-              <option value="de-DE">Немецкий</option>
-              <option value="it-IT">Итальянский</option>
-              <option value="ja-JP">Японский</option>
-              <option value="ko-KR">Корейский</option>
-              <option value="zh-CN">Китайский</option>
+              <option value="ru-RU">Russian</option>
+              <option value="en-US">English (US)</option>
+              <option value="uk-UA">Ukrainian</option>
+              <option value="es-ES">Spanish</option>
+              <option value="fr-FR">French</option>
+              <option value="de-DE">German</option>
+              <option value="it-IT">Italian</option>
+              <option value="ja-JP">Japanese</option>
+              <option value="ko-KR">Korean</option>
+              <option value="zh-CN">Chinese</option>
             </select>
           </div>
           <div class="config-item">
-            <label for="autoPunctuation">AI Пунктуация:</label>
+            <label for="autoPunctuation">AI punctuation:</label>
             <select id="autoPunctuation">
-              <option value="off">Выкл</option>
-              <option value="low">Низкий (только точки)</option>
-              <option value="medium">Средний (запятые, точки)</option>
-              <option value="high">Высокий (вопросы, восклицания)</option>
+              <option value="off">Off</option>
+              <option value="low">Low (periods only)</option>
+              <option value="medium">Medium (commas, periods)</option>
+              <option value="high">High (questions, exclamations)</option>
             </select>
           </div>
         </section>
@@ -316,14 +314,14 @@
               <line x1="12" y1="8" x2="12" y2="12"></line>
               <line x1="12" y1="16" x2="12.01" y2="16"></line>
             </svg>
-            <h3 id="instructionsHeading">Требуется доступ к микрофону</h3>
+            <h3 id="instructionsHeading">Microphone access required</h3>
           </div>
           <div class="instructions-content">
             <ol>
-              <li>Нажмите на значок 🔒 в адресной строке</li>
-              <li>Выберите "Настройки сайта"</li>
-              <li>Разрешите доступ к микрофону</li>
-              <li>Обновите страницу</li>
+              <li>Click the 🔒 icon in the address bar</li>
+              <li>Choose “Site settings”</li>
+              <li>Allow microphone access</li>
+              <li>Reload the page</li>
             </ol>
           </div>
         </div>
@@ -331,10 +329,10 @@
 
       <footer class="app-footer">
         <div class="footer-content">
-          <div class="version">v3.4 • Голос в Текст Pro</div>
+          <div class="version">v3.4 • Voice to Text Pro</div>
           <div class="footer-stats">
             <div class="stat-item" id="sessionStats">
-              <span>Сессия: 0 слов</span>
+              <span>Session: 0 words</span>
             </div>
           </div>
         </div>

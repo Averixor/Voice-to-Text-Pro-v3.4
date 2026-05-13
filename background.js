@@ -1,6 +1,6 @@
 // ===========================================
-// background.js: Фоновый Service Worker
-// Управление состоянием расширения, командами и боковой панелью.
+// background.js — service worker
+// Extension state, commands, side panel, context menu, notifications, paste.
 // ===========================================
 
 const CONTEXT_MENU_I18N = {
@@ -105,17 +105,17 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
   });
 });
 
-// --- 1. Инициализация и установки ---
+// --- 1. Install & startup ---
 
 chrome.runtime.onInstalled.addListener(() => {
   console.log(
-    "Голос в Текст Pro установлен. Настройка контекстного меню и поведения панели.",
+    "Voice to Text Pro installed. Configuring context menu and side panel behavior.",
   );
 
   chrome.sidePanel
     .setPanelBehavior({ openPanelOnActionClick: true })
     .catch((error) =>
-      console.error("Ошибка установки поведения боковой панели:", error),
+      console.error("Failed to set side panel behavior:", error),
     );
 
   chrome.storage.local.get("language", (stored) => {
@@ -125,7 +125,7 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.set({ sidePanelOpen: false });
 });
 
-// --- 2. Обработка горячих клавиш ---
+// --- 2. Keyboard commands ---
 
 chrome.commands.onCommand.addListener((command) => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -160,7 +160,7 @@ chrome.commands.onCommand.addListener((command) => {
   });
 });
 
-// --- 3. Обработка контекстного меню ---
+// --- 3. Context menu ---
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "pasteTranscript" && tab && tab.id) {
@@ -168,14 +168,14 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
       const textToPaste = result.textDraft || "";
       if (textToPaste) {
         sendPasteToTab(tab.id, textToPaste).catch((error) =>
-          console.error("Ошибка вставки через контекстное меню:", error),
+          console.error("Context menu paste failed:", error),
         );
       }
     });
   }
 });
 
-// --- 4. Обработка сообщений ---
+// --- 4. Runtime messages ---
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "closeSidePanel") {
