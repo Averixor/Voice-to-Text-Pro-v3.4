@@ -117,7 +117,7 @@
 - Web Speech API — распознавание речи
 - Chrome Extensions Manifest V3 — современная платформа расширений
 - Chrome Side Panel API — боковая панель
-- CSS Grid & Flexbox — современная верстка
+- CSS Grid \& Flexbox — современная верстка
 - Modern JavaScript (ES6+)
 - Chrome Storage API — сохранение настроек и текста
 

@@ -4,7 +4,7 @@
 
 **Голос в Текст Pro** — расширение для Google Chrome, которое преобразует голос в текст с использованием Web Speech API, имеет встроенную AI-пунктуацию, проверку орфографии и работает в виде боковой панели.
 
----
+\---
 
 ## СТРУКТУРА ПРОЕКТА
 
@@ -22,47 +22,47 @@ voice-to-text-pro-v3.3-fixed/
 │   └── icon128.png            # Иконка 128×128
 ├── README.md                  # Документация
 ├── CHANGELOG.md               # История изменений
-└── CHECKLIST_VOICE_TO_TEXT_PRO.md  # Этот файл
+└── CHECKLIST\_VOICE\_TO\_TEXT\_PRO.md  # Этот файл
 ```
 
----
+\---
 
 ## ВЫПОЛНЕННЫЕ ИСПРАВЛЕНИЯ
 
 ### v3.3 — критические и синтаксические исправления
 
-- [x] `background.js` — добавлен `return true;` и `sendResponse()` во все обработчики
-- [x] `background.js` — реализована логика закрытия панели через storage
-- [x] `content.js` — исправлена синтаксическая ошибка в pasteText
-- [x] `content.js` — унифицированы значения пунктуации
-- [x] `sidepanel.js` — добавлен обработчик insertBtn
-- [x] `sidepanel.js` — `none` → `off` для пунктуации
-- [x] `sidepanel.js` — `chrome.runtime.connect()` → `chrome.runtime.sendMessage()`
-- [x] `sidepanel.js` — исправлена логика formatText
-- [x] `sidepanel.html` — удалён несуществующий editorPlaceholder, добавлен waveContainer
-- [x] `styles.css` — добавлены `.hidden`, `.status-preparing`, стили кнопок
-- [x] `manifest.json` — версия обновлена на 3.3
+- \[x] `background.js` — добавлен `return true;` и `sendResponse()` во все обработчики
+- \[x] `background.js` — реализована логика закрытия панели через storage
+- \[x] `content.js` — исправлена синтаксическая ошибка в pasteText
+- \[x] `content.js` — унифицированы значения пунктуации
+- \[x] `sidepanel.js` — добавлен обработчик insertBtn
+- \[x] `sidepanel.js` — `none` → `off` для пунктуации
+- \[x] `sidepanel.js` — `chrome.runtime.connect()` → `chrome.runtime.sendMessage()`
+- \[x] `sidepanel.js` — исправлена логика formatText
+- \[x] `sidepanel.html` — удалён несуществующий editorPlaceholder, добавлен waveContainer
+- \[x] `styles.css` — добавлены `.hidden`, `.status-preparing`, стили кнопок
+- \[x] `manifest.json` — версия обновлена на 3.3
 
 ### v3.4 — новый функционал, UX, доступность, баг-фиксы
 
-- [x] Добавлена кнопка **Пауза / Продолжить** с полной логикой
-- [x] Кнопки разделены на два блока: запись (Начать, Пауза, Стоп) и текст (Вставить, Копировать, Очистить)
-- [x] Кнопки показывают подписи всегда (убрано скрытие span при узкой панели)
-- [x] **Кнопка закрытия панели** — исправлена: `window.close()` + поиск вкладки в background
-- [x] **Капитализация после точки** — исправлена: `finalTranscript.trimEnd().slice(-1)` вместо `output.value.slice(-1)`
-- [x] **Загрузка уровня `off`** — исправлена проверка falsy-строки
-- [x] Добавлен `showTransientStatus()` — временные сообщения без сброса состояния
-- [x] Поддержка стандартного `SpeechRecognition` (fallback)
-- [x] Игнорирование `e.repeat` в обработчике клавиш
-- [x] ARIA-атрибуты: `role="status"`, `aria-live`, `aria-hidden`, `aria-label`, `role="dialog"`
-- [x] Класс `.visually-hidden` и скрытый `<label>` для textarea
-- [x] Начальный класс `status-idle` на карточке статуса
-- [x] Текст «Готов к записи» — согласован между HTML и JS
-- [x] `closeSidePanel()` останавливает запись и сохраняет черновик перед закрытием
-- [x] `recognitionError` из background корректно скидывает флаги
-- [x] Обновлены README.md, CHANGELOG.md, CHECKLIST
+- \[x] Добавлена кнопка **Пауза / Продолжить** с полной логикой
+- \[x] Кнопки разделены на два блока: запись (Начать, Пауза, Стоп) и текст (Вставить, Копировать, Очистить)
+- \[x] Кнопки показывают подписи всегда (убрано скрытие span при узкой панели)
+- \[x] **Кнопка закрытия панели** — исправлена: `window.close()` + поиск вкладки в background
+- \[x] **Капитализация после точки** — исправлена: `finalTranscript.trimEnd().slice(-1)` вместо `output.value.slice(-1)`
+- \[x] **Загрузка уровня `off`** — исправлена проверка falsy-строки
+- \[x] Добавлен `showTransientStatus()` — временные сообщения без сброса состояния
+- \[x] Поддержка стандартного `SpeechRecognition` (fallback)
+- \[x] Игнорирование `e.repeat` в обработчике клавиш
+- \[x] ARIA-атрибуты: `role="status"`, `aria-live`, `aria-hidden`, `aria-label`, `role="dialog"`
+- \[x] Класс `.visually-hidden` и скрытый `<label>` для textarea
+- \[x] Начальный класс `status-idle` на карточке статуса
+- \[x] Текст «Готов к записи» — согласован между HTML и JS
+- \[x] `closeSidePanel()` останавливает запись и сохраняет черновик перед закрытием
+- \[x] `recognitionError` из background корректно скидывает флаги
+- \[x] Обновлены README.md, CHANGELOG.md, CHECKLIST
 
----
+\---
 
 ## СПИСОК ФАЙЛОВ И ИЗМЕНЕНИЯ
 
@@ -77,7 +77,7 @@ voice-to-text-pro-v3.3-fixed/
 | `README.md`      | Базовая документация               | Обновлена под v3.4                                         |
 | `CHANGELOG.md`   | Секция 3.3                         | Добавлена секция 3.4                                       |
 
----
+\---
 
 ## РЕЗУЛЬТАТЫ ТЕСТИРОВАНИЯ
 
@@ -130,7 +130,7 @@ voice-to-text-pro-v3.3-fixed/
 | medium  | Да                      | Пройден |
 | high    | Да                      | Пройден |
 
----
+\---
 
 ## РЕКОМЕНДАЦИИ ДЛЯ ДАЛЬНЕЙШЕГО РАЗВИТИЯ
 
@@ -142,7 +142,7 @@ voice-to-text-pro-v3.3-fixed/
 6. Реализовать поддержку других браузеров (Firefox, Edge)
 7. Добавить настройки внешнего вида (темы, размер шрифта)
 
----
+\---
 
 ## ПРИМЕЧАНИЯ
 
@@ -152,7 +152,7 @@ voice-to-text-pro-v3.3-fixed/
 - Требуется разрешение на доступ к микрофону
 - Web Speech API требует активного интернет-соединения
 
----
+\---
 
 **Дата обновления:** Май 2026
 **Версия проекта:** 3.4
