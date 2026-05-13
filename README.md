@@ -265,6 +265,18 @@ Averixor
 
 ---
 
+
+
+
+
+
+
+
+
+
+
+---
+
 # Voice-to-Text Pro 3.4
 
 **Voice-to-Text Pro** — це розширення для Google Chrome, яке перетворює мовлення на текст за допомогою **Web Speech API**.
