@@ -1,3 +1,8 @@
+// ===========================================
+// sidepanel.js - Chrome side panel page
+// SpeechRecognition, applyAppLocale(), storage, shortcuts, paste to tab.
+// ===========================================
+
 class SpeechToTextPro {
   constructor() {
     this.recognition = null;
@@ -472,7 +477,7 @@ class SpeechToTextPro {
 
   /**
    * Show a transient message in the status line without resetting recording / pause mode.
-   * @param {boolean} [asError] — if true, briefly style the card as an error (idle/error UI).
+   * @param {boolean} [asError] - if true, briefly style the card as an error (idle/error UI).
    */
   showTransientStatus(message, durationMs = 2000, asError = false) {
     clearTimeout(this._transientStatusTimer);

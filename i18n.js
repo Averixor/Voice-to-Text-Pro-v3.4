@@ -1,6 +1,13 @@
 /**
  * UI i18n: locale key = BCP-47 (same as the recognition language list).
  * Drives side panel UI for the selected `#language` value.
+ *
+ * Do not replace with English (by design):
+ * - `PACKS[locale]` strings for each locale except `ru-RU` / `uk-UA` (native UI).
+ * - `ru-RU` and `uk-UA` packs use English UI text; speech + punctuation still follow
+ *   that locale (see README).
+ * - Punctuation helpers (`punctRuQ`, `punctUkQ`, …) embed non-English tokens to match
+ *   transcript wording in high punctuation mode.
  */
 (function () {
   const FALLBACK = "en-US";

@@ -1,5 +1,5 @@
 // ===========================================
-// background.js — service worker
+// background.js - service worker
 // Extension state, commands, side panel, context menu, notifications, paste.
 // ===========================================
 

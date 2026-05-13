@@ -1,5 +1,5 @@
 // ===========================================
-// content.js — content script
+// content.js - content script
 // Speech recognition on the tab (when used) and text paste into page fields.
 // ===========================================
 

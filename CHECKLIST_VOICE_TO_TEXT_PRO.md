@@ -2,14 +2,14 @@
 
 ## Project description
 
-**Voice to Text Pro** is a Google Chrome extension (Manifest V3): speech to text via Web Speech API, **four AI punctuation levels**, spell check in the input field, UI in the **side panel**. The selected **recognition language** is also the **panel UI language** (`i18n.js`). Recording-started notification and context menu item are localized in **`background.js`** from `storage.language`.
+**Voice to Text Pro** is a Google Chrome extension (Manifest V3): speech to text via Web Speech API, **four AI punctuation levels**, spell check in the input field, UI in the **side panel**. The selected **recognition language** drives STT, spell check, and the string pack in **`i18n.js`** (`ru-RU` / `uk-UA` use English UI strings with locale-specific punctuation helpers). Recording-started notification and context menu item are localized in **`background.js`** from `storage.language`.
 
 ---
 
 ## Project structure
 
 ```text
-voice-to-text-pro-v3.3-fixed/
+Voice-to-Text-Pro-v3.4/
 ├── manifest.json                 # MV3: permissions, side_panel, content_scripts, commands
 ├── background.js                 # Service worker: menu, notifications, commands, sendPasteToTab
 ├── i18n.js                       # UI strings + punctuation regex; globalThis.AppI18n
@@ -52,7 +52,7 @@ voice-to-text-pro-v3.3-fixed/
 - [x] ARIA, `role="status"`, visually-hidden label, `status-idle` on load
 - [x] `closeSidePanel()` — stop recording, save draft
 - [x] `recognitionError` clears flags correctly
-- [x] **`i18n.js`** + **`applyAppLocale()`** — list language = panel UI language
+- [x] **`i18n.js`** + **`applyAppLocale()`** — selected list locale loads its string pack (`ru-RU` / `uk-UA`: English UI + locale punctuation)
 - [x] **`globalThis.AppI18n`** — safe export (including worker via `importScripts`)
 - [x] **`background.js`**: `updateSettings` partially saves `language` and/or `autoPunctuation`
 - [x] **Notification** and **context menu** follow `storage.language`; menu update + fallback on `update` error

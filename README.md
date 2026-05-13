@@ -19,7 +19,7 @@ Google Chrome extension: speech to text via **Web Speech API**, **AI punctuation
 
 ### UI localization
 
-- The **recognition language** list sets **Web Speech API language**, the text field **`lang` attribute**, and **the entire side panel UI** (`i18n.js`, `applyAppLocale()` in `sidepanel.js`)
+- The **recognition language** list sets **Web Speech API language**, the text field **`lang` attribute**, and **the side panel UI strings** from `i18n.js` (`applyAppLocale()` in `sidepanel.js`). Locales **`ru-RU`** and **`uk-UA`** use **English** interface text while keeping Russian/Ukrainian speech and smart-punctuation rules.
 - Chrome **recording-started** notification and **context menu** “paste draft” strings come from **`background.js`** using `chrome.storage.local.language`
 - **Command descriptions** in `manifest.json` (`commands.description`) are **static** manifest strings; changing the panel UI language does not change them
 
