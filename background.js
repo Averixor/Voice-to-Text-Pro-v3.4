@@ -7,13 +7,13 @@ const CONTEXT_MENU_I18N = {
   "ru-RU": "Вставить текст из Голос в Текст Pro",
   "uk-UA": "Вставити текст з Голос у Текст Pro",
   "en-US": "Insert text from Voice to Text Pro",
-  "es-ES": "Insertar texto de Voz a texto Pro",
-  "fr-FR": "Insérer le texte depuis Voix vers texte Pro",
+  "es-ES": "Insertar texto de Voz a Texto Pro",
+  "fr-FR": "Insérer le texte depuis Voix en Texte Pro",
   "de-DE": "Text aus Sprache zu Text Pro einfügen",
-  "it-IT": "Inserisci testo da Voce a testo Pro",
-  "ja-JP": "音声テキスト化 Pro からテキストを挿入",
-  "ko-KR": "음성 텍스트 Pro에서 텍스트 삽입",
-  "zh-CN": "从语音转文字 Pro 插入文本",
+  "it-IT": "Inserisci testo da Voce in Testo Pro",
+  "ja-JP": "音声テキスト変換 Pro からテキストを挿入",
+  "ko-KR": "음성을 텍스트로 Pro에서 텍스트 삽입",
+  "zh-CN": "从语音转文本 Pro 插入文本",
 };
 
 const RECORDING_STARTED_NOTIFY = {
@@ -30,11 +30,11 @@ const RECORDING_STARTED_NOTIFY = {
     message: "Recording started. Speak now.",
   },
   "es-ES": {
-    title: "Voz a texto Pro",
+    title: "Voz a Texto Pro",
     message: "Grabación iniciada. Hable ahora.",
   },
   "fr-FR": {
-    title: "Voix vers texte Pro",
+    title: "Voix en Texte Pro",
     message: "Enregistrement démarré. Parlez maintenant.",
   },
   "de-DE": {
@@ -42,19 +42,19 @@ const RECORDING_STARTED_NOTIFY = {
     message: "Aufnahme gestartet. Sprechen Sie jetzt.",
   },
   "it-IT": {
-    title: "Voce a testo Pro",
+    title: "Voce in Testo Pro",
     message: "Registrazione avviata. Parla ora.",
   },
   "ja-JP": {
-    title: "音声テキスト化 Pro",
+    title: "音声テキスト変換 Pro",
     message: "録音を開始しました。話してください。",
   },
   "ko-KR": {
-    title: "음성 텍스트 Pro",
+    title: "음성을 텍스트로 Pro",
     message: "녹음이 시작되었습니다. 말하세요.",
   },
   "zh-CN": {
-    title: "语音转文字 Pro",
+    title: "语音转文本 Pro",
     message: "已开始录音，请说话。",
   },
 };
